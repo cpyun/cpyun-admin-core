@@ -26,7 +26,7 @@ type Config struct {
 	//Pgsql  		Pgsql 	`mapstructure:"pgsql" json:"pgsql" yaml:"pgsql"`
 	//DBList 		[]DB 	`mapstructure:"db-list" json:"db-list" yaml:"db-list"`
 	//// oss
-	Storage Storage `mapstructure:"storage" json:"mysql" yaml:"mysql"`
+	Storage Storage `mapstructure:"storage" json:"mysql" yaml:"storage"`
 
 	//
 	//Excel Excel 	`mapstructure:"excel" json:"excel" yaml:"excel"`
