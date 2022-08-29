@@ -2,6 +2,7 @@ package filesystem
 
 import (
 	"context"
+	"github.com/cpyun/cpyun-admin-core/config"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 	"log"
@@ -16,29 +17,37 @@ type FileSystem struct {
 }
 
 //
-func New() FileSystem {
+func New() *FileSystem {
 	ctx := context.Background()
+	option := config.Settings.Storage.Minio
 
-	endpoint := "192.168.99.93:9090"
-	accessKeyID := "LaBY0JlcsRH4pac7uM17wxCB"
-	secretAccessKey := "neTSW#OrzWR7a^VrXvlp6QZ8bo!akWDMTy3b"
-	useSSL := false
-	bucketName := "notice"
-
-	s3Client, err := minio.New(endpoint, &minio.Options{
-		Creds:  credentials.NewStaticV4(accessKeyID, secretAccessKey, ""),
-		Secure: useSSL,
+	s3Client, err := minio.New(option.Endpoint, &minio.Options{
+		Creds:  credentials.NewStaticV4(option.AccessKeyID, option.SecretAccessKey, ""),
+		Secure: option.Secure,
 	})
 
 	if err != nil {
-		log.Fatalln(err)
+		//log.Fatalln(err)
+		log.Println(err)
 	}
 
-	return FileSystem{
+	return &FileSystem{
 		client:     s3Client,
 		ctx:        ctx,
-		bucketName: bucketName,
+		bucketName: option.Bucket,
 	}
+}
+
+// 设置上下文
+func (f *FileSystem) SetContext(ctx context.Context) *FileSystem {
+	f.ctx = ctx
+	return f
+}
+
+// 设置bucket
+func (f *FileSystem) SetBucket(bucketName string) *FileSystem {
+	f.bucketName = bucketName
+	return f
 }
 
 // 保存文件
