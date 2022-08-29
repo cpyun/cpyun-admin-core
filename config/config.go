@@ -1,8 +1,8 @@
 package config
 
 import (
-	"github.com/cpyun/cpyun-admin-core/config/driver"
 	"fmt"
+	"github.com/cpyun/cpyun-admin-core/config/driver"
 )
 
 type Config struct {
@@ -26,17 +26,15 @@ type Config struct {
 	//Pgsql  		Pgsql 	`mapstructure:"pgsql" json:"pgsql" yaml:"pgsql"`
 	//DBList 		[]DB 	`mapstructure:"db-list" json:"db-list" yaml:"db-list"`
 	//// oss
-	//Local      	Local      `mapstructure:"local" json:"local" yaml:"local"`
-	//Qiniu      	Qiniu      `mapstructure:"qiniu" json:"qiniu" yaml:"qiniu"`
-	//AliyunOSS  	AliyunOSS  `mapstructure:"aliyun-oss" json:"aliyunOSS" yaml:"aliyun-oss"`
-	//HuaWeiObs  	HuaWeiObs  `mapstructure:"hua-wei-obs" json:"huaWeiObs" yaml:"hua-wei-obs"`
-	//TencentCOS 	TencentCOS `mapstructure:"tencent-cos" json:"tencentCOS" yaml:"tencent-cos"`
+	Storage Storage `mapstructure:"storage" json:"mysql" yaml:"mysql"`
+
 	//
 	//Excel Excel 	`mapstructure:"excel" json:"excel" yaml:"excel"`
 	//Timer Timer 	`mapstructure:"timer" json:"timer" yaml:"timer"`
 	//
 	//// 跨域配置
 	//Cors CORS 	`mapstructure:"cors" json:"cors" yaml:"cors"`
+	Extend interface{} `yaml:"extend"`
 }
 
 // 多db改造
