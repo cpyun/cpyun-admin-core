@@ -2,12 +2,13 @@ package filesystem
 
 import (
 	"context"
-	"github.com/cpyun/cpyun-admin-core/config"
-	"github.com/minio/minio-go/v7"
-	"github.com/minio/minio-go/v7/pkg/credentials"
 	"log"
 	"mime/multipart"
 	"path/filepath"
+
+	"github.com/cpyun/cpyun-admin-core/config"
+	"github.com/minio/minio-go/v7"
+	"github.com/minio/minio-go/v7/pkg/credentials"
 )
 
 type FileSystem struct {
@@ -16,7 +17,6 @@ type FileSystem struct {
 	bucketName string
 }
 
-//
 func New() *FileSystem {
 	ctx := context.Background()
 	option := config.Settings.Storage.Minio
@@ -83,6 +83,7 @@ func (f FileSystem) PutFileAs(path string, file *multipart.FileHeader, name stri
 
 }
 
+// getObject
 func (f FileSystem) GetObject(objectName string) *minio.Object {
 	getObjectOptions := minio.GetObjectOptions{}
 
@@ -93,4 +94,9 @@ func (f FileSystem) GetObject(objectName string) *minio.Object {
 	}
 
 	return object
+}
+
+// getS3Client
+func (f *FileSystem) GetS3Client() *minio.Client {
+	return f.client
 }
