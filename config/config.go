@@ -1,8 +1,8 @@
 package config
 
 import (
-	"fmt"
 	"github.com/cpyun/cpyun-admin-core/config/driver"
+	"log"
 )
 
 type Config struct {
@@ -50,8 +50,35 @@ type Config struct {
 var (
 	ExtendConfig interface{}
 	Settings     *Config
-	//_cfg         config.Server
+	_cfg         *settings
 )
+
+type settings struct {
+	Settings  Config
+	callbacks []func()
+}
+
+// 初始化
+func (e *settings) init() {
+	e.Settings.Logger.Setup()
+	_, _ = e.Settings.Cache.Setup()
+
+	// 调用回调函数
+	e.runCallback()
+}
+
+// 回调函数
+func (e *settings) runCallback() {
+	for i := range e.callbacks {
+		e.callbacks[i]()
+	}
+}
+
+// 修改配置
+func (e *settings) OnChange() {
+	e.init()
+	log.Println("!!! config change and reload")
+}
 
 // @title    Setup
 // @description   Setup 载入配置文件
@@ -60,19 +87,38 @@ var (
 // @param     fs        func          "回调函数"
 // @return
 func Setup(s string, fs ...func()) {
+	//var err error
+
 	Settings = &Config{
-		//Application: nil,
+		Extend: ExtendConfig,
 	}
+	_cfg = &settings{
+		Settings:  *Settings,
+		callbacks: fs,
+	}
+
 	//1. 读取配置
 	driver.NewSource(s)
-	driver.WithEntity(Settings)
 
-	// 日志
-	Settings.Logger.Setup()
-	_, err := Settings.Cache.Setup()
-	if err != nil {
-		fmt.Printf("=>>>>>>>>>>>>>>>>>> %s", err.Error())
-	}
+	//driver.DefaultConfig, err = driver.NewConfig(
+	//	// 绑定实体
+	//	driver.WithEntity(_cfg),
+	//)
+	//if err != nil {
+	//	log.Fatal(fmt.Sprintf("New config object fail: %s", err.Error()))
+	//}
+	//entity := defaultConfig.Options().Entity
+	//driver.WithBind(entity)
+	//fmt.Printf("entity >>>>>>>>>>>>>>> %+v \n", entity)
 
-	fmt.Printf("%+v", Settings.Redis)
+	driver.WithBind(Settings)
+	//fmt.Printf("Settings >>>>>>>>>>>>>>> %+v \n", Settings)
+	_cfg.Settings = *Settings
+
+	// 绑定单个结构体数据
+	//driver.WithBindKey("application", ApplicationConfig)
+	driver.WithBindKey("extend", Settings.Extend)
+
+	// 初始化配置
+	_cfg.init()
 }

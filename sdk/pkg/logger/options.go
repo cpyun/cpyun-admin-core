@@ -7,7 +7,7 @@
 
 package logger
 
-type Option func(*options)
+type OptionFunc func(*options)
 
 type options struct {
 	driver string
@@ -26,31 +26,31 @@ func setDefault() options {
 	}
 }
 
-func WithType(s string) Option {
+func WithType(s string) OptionFunc {
 	return func(o *options) {
 		o.driver = s
 	}
 }
 
-func WithPath(s string) Option {
+func WithPath(s string) OptionFunc {
 	return func(o *options) {
 		o.path = s
 	}
 }
 
-func WithLevel(s string) Option {
+func WithLevel(s string) OptionFunc {
 	return func(o *options) {
 		o.level = s
 	}
 }
 
-func WithStdout(s string) Option {
+func WithStdout(s string) OptionFunc {
 	return func(o *options) {
 		o.stdout = s
 	}
 }
 
-func WithCap(n uint) Option {
+func WithCap(n uint) OptionFunc {
 	return func(o *options) {
 		o.cap = n
 	}

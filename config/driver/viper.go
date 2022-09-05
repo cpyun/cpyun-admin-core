@@ -4,20 +4,14 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
+	"os"
+
 	"github.com/fsnotify/fsnotify"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"os"
 )
-
-type entity interface {
-	//OnChange()
-}
-
-type Options struct {
-	entity entity
-}
 
 func NewSource(s string) string {
 	//1. 读取配置
@@ -51,7 +45,7 @@ func NewSource(s string) string {
 	return ""
 }
 
-func WithEntity(e entity) {
+func WithBind(e any) {
 	_, cancel := context.WithCancel(context.Background())
 	// 绑定数据
 	if err := viper.Unmarshal(e); err != nil {
@@ -63,8 +57,17 @@ func WithEntity(e entity) {
 	viper.OnConfigChange(func(et fsnotify.Event) {
 		fmt.Println("[config] ============> config file changed:", et.Name)
 		if err := viper.Unmarshal(e); err != nil {
+			//opts.OnChange()
 			fmt.Println(err)
 		}
 		cancel()
 	})
+}
+
+//
+func WithBindKey(key string, rawVal any) {
+	err := viper.UnmarshalKey(key, rawVal)
+	if err != nil {
+		log.Fatal("[config] ============> error :", err.Error())
+	}
 }

@@ -13,7 +13,7 @@ import (
 )
 
 // SetupLogger 日志 cap 单位为kb
-func SetupLogger(opts ...Option) log.Logger {
+func SetupLogger(opts ...OptionFunc) log.Logger {
 	op := setDefault()
 	for _, o := range opts {
 		o(&op)
