@@ -1,7 +1,6 @@
 package driver
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"log"
@@ -46,7 +45,6 @@ func NewSource(s string) string {
 }
 
 func WithBind(e any) {
-	_, cancel := context.WithCancel(context.Background())
 	// 绑定数据
 	if err := viper.Unmarshal(e); err != nil {
 		panic(err)
@@ -60,7 +58,6 @@ func WithBind(e any) {
 			//opts.OnChange()
 			fmt.Println(err)
 		}
-		cancel()
 	})
 }
 
