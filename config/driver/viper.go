@@ -1,7 +1,6 @@
 package driver
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"log"
