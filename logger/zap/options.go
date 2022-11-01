@@ -44,3 +44,10 @@ type writerKey struct{}
 func WithOutput(out io.Writer) logger.Option {
 	return logger.SetOption(writerKey{}, out)
 }
+
+// 时间格式
+type timeFormatKey struct{}
+
+func WithTimeFormat(timeFormat string) logger.Option {
+	return logger.SetOption(timeFormatKey{}, timeFormat)
+}

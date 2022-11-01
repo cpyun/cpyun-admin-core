@@ -1,15 +1,13 @@
 package logger
 
 import (
-	"github.com/cpyun/cpyun-admin-core/logger/zap"
 	"io"
 	"os"
 
 	"github.com/cpyun/cpyun-admin-core/debug/writer"
-	//zap "github.com/cpyun/cpyun-admin-core/logger/driver"
-	"github.com/cpyun/cpyun-admin-core/sdk/pkg"
-
 	log "github.com/cpyun/cpyun-admin-core/logger"
+	"github.com/cpyun/cpyun-admin-core/logger/zap"
+	"github.com/cpyun/cpyun-admin-core/sdk/pkg"
 )
 
 // SetupLogger 日志 cap 单位为kb
@@ -46,7 +44,7 @@ func SetupLogger(opts ...OptionFunc) log.Logger {
 
 	switch op.driver {
 	case "zap":
-		log.DefaultLogger, err = zap.NewLogger(log.WithLevel(level), log.WithOutput(output), zap.WithCallerSkip(2))
+		log.DefaultLogger, err = zap.NewLogger(log.WithLevel(level), zap.WithTimeFormat(op.timeFormat), zap.WithOutput(output), zap.WithCallerSkip(2))
 		if err != nil {
 			log.Fatalf("new zap logger error, %s", err.Error())
 		}
