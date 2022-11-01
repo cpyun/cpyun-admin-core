@@ -6,16 +6,14 @@ import (
 	"io"
 	"os"
 	"sync"
-	"time"
 
-	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
 	"github.com/cpyun/cpyun-admin-core/logger"
 )
 
-type zaplog struct {
+type zapLog struct {
 	cfg  zap.Config
 	zap  *zap.Logger
 	opts logger.Options
@@ -23,7 +21,7 @@ type zaplog struct {
 	fields map[string]interface{}
 }
 
-func (l *zaplog) Init(opts ...logger.Option) error {
+func (l *zapLog) Init(opts ...logger.Option) error {
 	//var err error
 
 	for _, o := range opts {
@@ -31,12 +29,12 @@ func (l *zaplog) Init(opts ...logger.Option) error {
 	}
 
 	zapConfig := zap.NewProductionConfig()
-	if zconfig, ok := l.opts.Context.Value(configKey{}).(zap.Config); ok {
-		zapConfig = zconfig
+	if zConfig, ok := l.opts.Context.Value(configKey{}).(zap.Config); ok {
+		zapConfig = zConfig
 	}
 
-	if zcconfig, ok := l.opts.Context.Value(encoderConfigKey{}).(zapcore.EncoderConfig); ok {
-		zapConfig.EncoderConfig = zcconfig
+	if ecConfig, ok := l.opts.Context.Value(encoderConfigKey{}).(zapcore.EncoderConfig); ok {
+		zapConfig.EncoderConfig = ecConfig
 	}
 
 	writer, ok := l.opts.Context.Value(writerKey{}).(io.Writer)
@@ -54,7 +52,18 @@ func (l *zaplog) Init(opts ...logger.Option) error {
 	if l.opts.Level != logger.InfoLevel {
 		zapConfig.Level.SetLevel(loggerToZapLevel(l.opts.Level))
 	}
-	zapConfig.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
+
+	// 设置日志时间格式
+	if timeFormat, ok := l.opts.Context.Value(timeFormatKey{}).(string); ok {
+		if timeFormat != "" {
+			zapConfig.EncoderConfig.EncodeTime = zapcore.TimeEncoderOfLayout(timeFormat)
+		} else {
+			zapConfig.EncoderConfig.EncodeTime = zapcore.RFC3339TimeEncoder
+		}
+	}
+
+	// 日志级别大写
+	zapConfig.EncoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
 
 	logCore := zapcore.NewCore(
 		zapcore.NewConsoleEncoder(zapConfig.EncoderConfig),
@@ -90,7 +99,7 @@ func (l *zaplog) Init(opts ...logger.Option) error {
 	return nil
 }
 
-func (l *zaplog) Fields(fields map[string]interface{}) logger.Logger {
+func (l *zapLog) Fields(fields map[string]interface{}) logger.Logger {
 	l.Lock()
 	nfields := make(map[string]interface{}, len(l.fields))
 	for k, v := range l.fields {
@@ -106,7 +115,7 @@ func (l *zaplog) Fields(fields map[string]interface{}) logger.Logger {
 		data = append(data, zap.Any(k, v))
 	}
 
-	zl := &zaplog{
+	zl := &zapLog{
 		cfg:    l.cfg,
 		zap:    l.zap,
 		opts:   l.opts,
@@ -116,11 +125,11 @@ func (l *zaplog) Fields(fields map[string]interface{}) logger.Logger {
 	return zl
 }
 
-func (l *zaplog) Error(err error) logger.Logger {
+func (l *zapLog) Error(err error) logger.Logger {
 	return l.Fields(map[string]interface{}{"error": err})
 }
 
-func (l *zaplog) Log(level logger.Level, args ...interface{}) {
+func (l *zapLog) Log(level logger.Level, args ...interface{}) {
 	l.RLock()
 	data := make([]zap.Field, 0, len(l.fields))
 	for k, v := range l.fields {
@@ -144,7 +153,7 @@ func (l *zaplog) Log(level logger.Level, args ...interface{}) {
 	}
 }
 
-func (l *zaplog) Logf(level logger.Level, format string, args ...interface{}) {
+func (l *zapLog) Logf(level logger.Level, format string, args ...interface{}) {
 	l.RLock()
 	data := make([]zap.Field, 0, len(l.fields))
 	for k, v := range l.fields {
@@ -168,11 +177,11 @@ func (l *zaplog) Logf(level logger.Level, format string, args ...interface{}) {
 	}
 }
 
-func (l *zaplog) String() string {
+func (l *zapLog) String() string {
 	return "zap"
 }
 
-func (l *zaplog) Options() logger.Options {
+func (l *zapLog) Options() logger.Options {
 	return l.opts
 }
 
@@ -186,7 +195,7 @@ func NewLogger(opts ...logger.Option) (logger.Logger, error) {
 		Context: context.Background(),
 	}
 
-	l := &zaplog{opts: options}
+	l := &zapLog{opts: options}
 	if err := l.Init(opts...); err != nil {
 		return nil, err
 	}
@@ -227,134 +236,4 @@ func zapToLoggerLevel(level zapcore.Level) logger.Level {
 	default:
 		return logger.InfoLevel
 	}
-}
-
-/*********************/
-
-var Log *zap.Logger
-var level zapcore.Level
-
-func init() {
-	// 创建目录
-	os.MkdirAll("./logs", os.ModePerm)
-
-	// 设置日志级别
-	logLevel := "info"
-	setLevel(logLevel)
-
-	// 初始化日志
-	Log = zapLogger()
-	/*hooks := logrus.LevelHooks{}
-	hooks.Add(NewHook(SharedHub()))
-
-	Log = &logrus.Logger{
-		Out:          os.Stderr,
-		Formatter:    &logrus.TextFormatter{},
-		Hooks:        hooks,
-		Level:        logrus.DebugLevel,
-		ExitFunc:     os.Exit,
-		ReportCaller: false,
-	}*/
-}
-
-func zapLogger() (logger *zap.Logger) {
-
-	//自定义日志级别：自定义Warn级别
-	//warnLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
-	//	return lvl >= zapcore.WarnLevel && lvl >= logLevel
-	//})
-
-	logWriter := getWriter("./runtime/logs/info.log")
-
-	core := zapcore.NewTee(
-		zapcore.NewCore(getEncoder(), zapcore.AddSync(logWriter), level),                              // warn及以上写入errPat
-		zapcore.NewCore(getEncoder(), zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout)), level), // 同时将日志输出到控制台，NewJSONEncoder 是结构化输出
-	)
-
-	// 初始化
-	/*if level == zap.DebugLevel || level == zap.ErrorLevel {
-		logger = zap.New(core, zap.AddStacktrace(level))
-	}else {
-		logger = zap.New(core)
-	}*/
-	logger = zap.New(core, zap.AddCaller(), zap.AddStacktrace(level))
-
-	// 换行
-	/*showLine := true
-	if showLine {
-		logger = logger.WithOptions(zap.AddCaller())
-	}*/
-
-	return logger
-}
-
-// @ 设置日志级别
-func setLevel(logLevel string) {
-	// 日志级别
-	switch logLevel {
-	case "debug":
-		level = zap.DebugLevel
-	case "info":
-		level = zap.InfoLevel
-	case "warn":
-		level = zap.WarnLevel
-	case "error":
-		level = zap.ErrorLevel
-	case "dpanic":
-		level = zap.DPanicLevel
-	case "panic":
-		level = zap.PanicLevel
-	case "fatal":
-		level = zap.FatalLevel
-	default:
-		level = zap.InfoLevel
-	}
-}
-
-func getWriter(fileName string) io.Writer {
-	// 生成rotatelogs的Logger 实际生成的文件名 filename.YYmmddHH
-	// filename是指向最新日志的链接
-	hook, err := rotatelogs.New(
-		fileName+".%Y%m%d%H",
-		rotatelogs.WithLinkName(fileName),
-		rotatelogs.WithMaxAge(time.Hour*24*30),    // 保存30天
-		rotatelogs.WithRotationTime(time.Hour*24), //切割频率 24小时
-	)
-	if err != nil {
-		panic(err)
-	}
-
-	return hook
-}
-
-// @Title	getEncoder
-// @Description	获取zapcore.Encoder
-func getEncoder() zapcore.Encoder {
-	encoderConfig := zapcore.EncoderConfig{
-		MessageKey:     "msg",
-		LevelKey:       "level",
-		TimeKey:        "time",
-		NameKey:        "logger",
-		CallerKey:      "line",
-		StacktraceKey:  "stacktrace", // global.GVA_CONFIG.Zap.StacktraceKey,
-		LineEnding:     zapcore.DefaultLineEnding,
-		EncodeLevel:    zapcore.LowercaseLevelEncoder,
-		EncodeTime:     customTimeEncoder, // 自定义输出格式
-		EncodeDuration: zapcore.SecondsDurationEncoder,
-		EncodeCaller:   zapcore.FullCallerEncoder,
-		EncodeName:     zapcore.FullNameEncoder,
-	}
-	// 设置级别
-	encoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
-
-	jsonFormat := "console"
-	if jsonFormat == "json" {
-		return zapcore.NewJSONEncoder(encoderConfig)
-	}
-	return zapcore.NewConsoleEncoder(encoderConfig)
-}
-
-// 自定义日志输出时间格式
-func customTimeEncoder(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
-	enc.AppendString(t.Format("[cpyun] 2006/01/02 - 15:04:05.000"))
 }
