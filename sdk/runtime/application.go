@@ -37,6 +37,19 @@ type Routers struct {
 	List []Router
 }
 
+// NewConfig 默认值
+func NewConfig() *Application {
+	return &Application{
+		dbs:         make(map[string]*gorm.DB),
+		casbins:     make(map[string]*casbin.SyncedEnforcer),
+		crontab:     make(map[string]*cron.Cron),
+		middlewares: make(map[string]interface{}),
+		//memoryQueue: queue.NewMemory(10000),
+		handler: make(map[string][]func(r *gin.RouterGroup, hand ...*gin.HandlerFunc)),
+		routers: make([]Router, 0),
+	}
+}
+
 // SetDb 设置对应key的db
 func (e *Application) SetDb(key string, db *gorm.DB) {
 	e.mux.Lock()
@@ -116,19 +129,6 @@ func (e *Application) SetLogger(l logger.Logger) {
 // GetLogger 获取日志组件
 func (e *Application) GetLogger() logger.Logger {
 	return logger.DefaultLogger
-}
-
-// NewConfig 默认值
-func NewConfig() *Application {
-	return &Application{
-		dbs:         make(map[string]*gorm.DB),
-		casbins:     make(map[string]*casbin.SyncedEnforcer),
-		crontab:     make(map[string]*cron.Cron),
-		middlewares: make(map[string]interface{}),
-		//memoryQueue: queue.NewMemory(10000),
-		handler: make(map[string][]func(r *gin.RouterGroup, hand ...*gin.HandlerFunc)),
-		routers: make([]Router, 0),
-	}
 }
 
 // SetCrontab 设置对应key的crontab
