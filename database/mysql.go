@@ -9,9 +9,9 @@ import (
 
 	"github.com/cpyun/cpyun-admin-core/config"
 	dbLogger "github.com/cpyun/cpyun-admin-core/database/logger"
-	"github.com/cpyun/cpyun-admin-core/database/tool"
 	log "github.com/cpyun/cpyun-admin-core/logger"
 	"github.com/cpyun/cpyun-admin-core/sdk"
+	toolsDB "github.com/cpyun/cpyun-admin-core/tools/database"
 )
 
 //
@@ -45,15 +45,15 @@ func openDatabase() *gorm.DB {
 	//	SkipInitializeWithVersion: false,                  // 根据版本自动配置
 	//}
 
-	registers := make([]tool.ResolverConfigure, len(cfgMysql.Registers))
+	registers := make([]toolsDB.ResolverConfigure, len(cfgMysql.Registers))
 	for i := range cfgMysql.Registers {
-		registers[i] = tool.NewResolverConfigure(
+		registers[i] = toolsDB.NewResolverConfigure(
 			cfgMysql.Registers[i].Sources,
 			cfgMysql.Registers[i].Replicas,
 			cfgMysql.Registers[i].Policy,
 			cfgMysql.Registers[i].Tables)
 	}
-	resolverConfig := tool.NewConfigure(cfgMysql.GetMysqlDsn(), cfgMysql.MaxIdleConns, cfgMysql.MaxOpenConns, cfgMysql.ConnMaxIdleTime, cfgMysql.ConnMaxLifeTime, registers)
+	resolverConfig := toolsDB.NewConfigure(cfgMysql.GetMysqlDsn(), cfgMysql.MaxIdleConns, cfgMysql.MaxOpenConns, cfgMysql.ConnMaxIdleTime, cfgMysql.ConnMaxLifeTime, registers)
 	db, err := resolverConfig.Init(getGormOption(cfgMysql.LogMode), opens["mysql"])
 	if err != nil {
 		log.Fatal("failed to connect database:" + err.Error())
