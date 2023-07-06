@@ -15,8 +15,8 @@ type ControlBy struct {
 }
 
 type ModelTime struct {
-	CreateTime time.Time `gorm:"column:create_time; autoUpdateTime; default:CURRENT_TIMESTAMP;<-:create" json:"create_time,omitempty"`
-	UpdateTime time.Time `gorm:"column:update_time; autoCreateTime; default:CURRENT_TIMESTAMP on update current_timestamp" json:"update_time,omitempty"`
+	CreateTime time.Time `gorm:"column:create_time; autoCreateTime; <-:create" json:"create_time,omitempty"`
+	UpdateTime time.Time `gorm:"column:update_time; autoUpdateTime; <-;" json:"update_time,omitempty"`
 	//DeleteTime	gorm.DeleteAt 	`json:"-" gorm:"index;comment:删除时间"`
 }
 

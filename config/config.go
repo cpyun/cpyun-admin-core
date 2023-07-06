@@ -5,48 +5,6 @@ import (
 	"log"
 )
 
-type Config struct {
-	//System  		System  		`mapstructure:"system" json:"system" yaml:"system"`
-	Application Application `mapstructure:"application" json:"application" yaml:"application"`
-	JWT         Jwt         `mapstructure:"jwt" json:"jwt" yaml:"jwt"`
-	//Zap     		Zap     		`mapstructure:"zap" json:"zap" yaml:"zap"`
-	Logger Logger `mapstructure:"logger" json:"logger" yaml:"logger"`
-	Cache  Cache  `mapstructure:"cache" yaml:"cache" json:"cache"`
-
-	Redis Redis `mapstructure:"redis" json:"redis" yaml:"redis"`
-	//Email   		Email   `mapstructure:"email" json:"email" yaml:"email"`
-	Casbin Casbin `mapstructure:"casbin" json:"casbin" yaml:"casbin"`
-
-	//Captcha 		Captcha `mapstructure:"captcha" json:"captcha" yaml:"captcha"`
-	// auto
-	//AutoCode 		Autocode `mapstructure:"autoCode" json:"autoCode" yaml:"autoCode"`
-	// gorm
-	Mysql Mysql `mapstructure:"mysql" json:"mysql" yaml:"mysql"`
-	//Databases *map[string]*Mysql `mapstructure:"mysql" json:"mysql" yaml:"mysql"`
-	//Pgsql  		Pgsql 	`mapstructure:"pgsql" json:"pgsql" yaml:"pgsql"`
-	//DBList 		[]DB 	`mapstructure:"db-list" json:"db-list" yaml:"db-list"`
-	//// oss
-	Storage Storage `mapstructure:"storage" json:"mysql" yaml:"storage"`
-
-	//
-	//Excel Excel 	`mapstructure:"excel" json:"excel" yaml:"excel"`
-	//Timer Timer 	`mapstructure:"timer" json:"timer" yaml:"timer"`
-	//
-	//// 跨域配置
-	//Cors CORS 	`mapstructure:"cors" json:"cors" yaml:"cors"`
-	Extend interface{} `yaml:"extend"`
-}
-
-// 多db改造
-//func (e *Config) multiDatabase() {
-//	if len(*e.Databases) == 0 {
-//		*e.Databases = map[string]*Mysql{
-//			//"*": e.Mysql,
-//		}
-//
-//	}
-//}
-
 var (
 	ExtendConfig interface{}
 	Settings     *Config
@@ -60,8 +18,10 @@ type settings struct {
 
 // 初始化
 func (e *settings) init() {
+	// 配置日志
 	e.Settings.Logger.Setup()
-	_, _ = e.Settings.Cache.Setup()
+	//配置多数据库
+	e.Settings.multiDatabase()
 
 	// 调用回调函数
 	e.runCallback()
@@ -74,13 +34,13 @@ func (e *settings) runCallback() {
 	}
 }
 
-// 修改配置
+// OnChange 修改配置
 func (e *settings) OnChange() {
 	e.init()
 	log.Println("!!! config change and reload")
 }
 
-// @title    Setup
+// Setup
 // @description   Setup 载入配置文件
 // @auth      caillen             时间（2022/7/22   10:00 ）
 // @param     s         string        "配置文件路径"
@@ -90,6 +50,16 @@ func Setup(s string, fs ...func()) {
 	//var err error
 
 	Settings = &Config{
+		Application: ApplicationConfig,
+		Database:    DatabaseConfig,
+		Databases:   &DatabasesConfig,
+		Filesystem:  FilesystemConfig,
+		Cache:       CacheConfig,
+		Logger:      LoggerConfig,
+		Queue:       QueueConfig,
+		Locker:      LockerConfig,
+		JWT:         JwtConfig,
+
 		Extend: ExtendConfig,
 	}
 	_cfg = &settings{
