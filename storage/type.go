@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"mime/multipart"
 	"time"
 
 	"github.com/bsm/redislock"
@@ -48,4 +49,12 @@ type ConsumerFunc func(Messager) error
 type AdapterLocker interface {
 	String() string
 	Lock(key string, ttl int64, options *redislock.Options) (*redislock.Lock, error)
+}
+
+// AdapterFilesystem 文件系统
+type AdapterFilesystem interface {
+	String() string
+	PutFile(path string, file *multipart.FileHeader, rule string)
+	GetObject(objectName string) string
+	RemoveObject(file string) bool
 }

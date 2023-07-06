@@ -8,7 +8,6 @@ import (
 
 type Cache struct {
 	Driver string `yaml:"driver"`
-
 	Redis  *Redis
 	Memory interface{}
 }
@@ -16,7 +15,7 @@ type Cache struct {
 var CacheConfig = new(Cache)
 
 // Setup 构造cache 顺序 redis > 其他 > memory
-func (e Cache) Setup() (storage.AdapterCache, error) {
+func (e *Cache) Setup() (storage.AdapterCache, error) {
 	var cacheAdapter storage.AdapterCache
 
 	if e.Driver == "redis" {
@@ -27,21 +26,14 @@ func (e Cache) Setup() (storage.AdapterCache, error) {
 			return nil, err
 		}
 
-		r, err := cache.NewRedis(GetRedisClient(), options)
+		client := GetRedisClient()
+		cacheAdapter, err = cache.NewRedis(client, options)
 		if err != nil {
 			return nil, err
 		}
-
-		if _redis == nil {
-			_redis = r.GetClient()
-		}
-
-		cacheAdapter = r
 	} else {
 		cacheAdapter = cache.NewMemory()
 	}
-
-	//fmt.Printf("cacheadapter =>>>>>>>>>>>>>>>>>>>>>>>> %+v \r\n", e)
 
 	sdk.Runtime.SetCacheAdapter(cacheAdapter)
 

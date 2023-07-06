@@ -5,6 +5,29 @@ import (
 	"time"
 )
 
+var (
+	DatabaseConfig  = new(Database)
+	DatabasesConfig = make(map[string]*Database)
+)
+
+type Database struct {
+	Driver          string             `mapstructure:"driver" json:"driver" yaml:"driver"`
+	Source          string             `mapstructure:"source" json:"source" yaml:"source"`
+	ConnMaxIdleTime int                `mapstructure:"conn-max-idle-time" json:"conn-max-idle-time" yaml:"conn-max-idle-time"`
+	ConnMaxLifeTime int                `mapstructure:"conn-max-life-time" json:"conn-max-life-time" yaml:"conn-max-life-time"`
+	MaxIdleConns    int                `mapstructure:"max-idle-conns" json:"maxIdleConns" yaml:"max-idle-conns"` // 空闲中的最大连接数
+	MaxOpenConns    int                `mapstructure:"max-open-conns" json:"maxOpenConns" yaml:"max-open-conns"` // 打开到数据库的最大连接数
+	LoggerMode      string             `mapstructure:"logger_mode" json:"logger_mode" yaml:"logger-mode"`
+	Registers       []DBResolverConfig `mapstructure:"registers" json:"registers" yaml:"registers"`
+}
+
+type DBResolverConfig struct {
+	Sources  []string `mapstructure:"sources" json:"sources" yaml:"sources"`
+	Replicas []string `mapstructure:"replicas" json:"logZap" yaml:"replicas"`
+	Policy   string   `mapstructure:"policy" json:"policy" yaml:"policy"`
+	Tables   []string `mapstructure:"tables" json:"tables" yaml:"tables"`
+}
+
 type Mysql struct {
 	Hostname        string             `mapstructure:"host" json:"host" yaml:"host"`             // 服务器地址
 	HostPort        string             `mapstructure:"port" json:"port" yaml:"port"`             // 端口
@@ -20,13 +43,6 @@ type Mysql struct {
 	LogMode         string             `mapstructure:"log-mode" json:"logMode" yaml:"log-mode"`                  // 是否开启Gorm全局日志
 	LogZap          string             `mapstructure:"log-zap" json:"logZap" yaml:"log-zap"`                     // 是否通过zap写入日志文件
 	Registers       []DBResolverConfig `mapstructure:"registers"`
-}
-
-type DBResolverConfig struct {
-	Sources  []string `mapstructure:"sources" json:"sources" yaml:"sources"`
-	Replicas []string `mapstructure:"replicas" json:"logZap" yaml:"replicas"`
-	Policy   string   `mapstructure:"policy" json:"policy" yaml:"policy"`
-	Tables   []string `mapstructure:"tables" json:"tables" yaml:"tables"`
 }
 
 // @Title	parseDsn

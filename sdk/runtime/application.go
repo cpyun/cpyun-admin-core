@@ -27,6 +27,7 @@ type Application struct {
 	memoryQueue storage.AdapterQueue
 	handler     map[string][]func(r *gin.RouterGroup, hand ...*gin.HandlerFunc)
 	routers     []Router
+	fileSystem  storage.AdapterFilesystem
 }
 
 type Router struct {
@@ -247,4 +248,13 @@ func (e *Application) GetStreamMessage(id, stream string, value map[string]inter
 
 func (e *Application) GetMemoryQueue(prefix string) storage.AdapterQueue {
 	return NewQueue(prefix, e.memoryQueue)
+}
+
+// SetFilesystemAdapter 文件系统
+func (e *Application) SetFilesystemAdapter(f storage.AdapterFilesystem) {
+	e.fileSystem = f
+}
+
+func (e *Application) GetFilesystemAdapter() storage.AdapterFilesystem {
+	return NewFilesystem("", e.fileSystem)
 }

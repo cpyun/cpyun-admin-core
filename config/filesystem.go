@@ -1,11 +1,13 @@
 package config
 
-type Storage struct {
-	FilesystemCloud string
-	Local           interface{}
-	Minio           Minio
-	Qiniu           Qiniu
-	AliyunOSS       AliyunOSS
+var FilesystemConfig = new(Filesystem)
+
+type Filesystem struct {
+	Driver    string
+	Local     interface{}
+	Minio     Minio
+	Qiniu     Qiniu
+	AliyunOSS AliyunOSS
 }
 
 type Minio struct {

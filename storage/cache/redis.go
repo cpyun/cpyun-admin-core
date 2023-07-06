@@ -4,8 +4,13 @@ import (
 	"context"
 	"time"
 
-	"github.com/go-redis/redis/v8"
+	"github.com/redis/go-redis/v9"
 )
+
+// Redis cache implement
+type Redis struct {
+	client *redis.Client
+}
 
 var ctx = context.Background()
 
@@ -21,12 +26,9 @@ func NewRedis(client *redis.Client, options *redis.Options) (*Redis, error) {
 	if err != nil {
 		return nil, err
 	}
-	return r, nil
-}
 
-// Redis cache implement
-type Redis struct {
-	client *redis.Client
+	ctx = context.TODO()
+	return r, nil
 }
 
 func (*Redis) String() string {
