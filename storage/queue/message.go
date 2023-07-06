@@ -1,14 +1,16 @@
 package queue
 
 import (
-	"github.com/robinjoseph08/redisqueue/v2"
+	"sync"
 
 	"github.com/cpyun/cpyun-admin-core/storage"
+	"github.com/robinjoseph08/redisqueue/v2"
 )
 
 type Message struct {
 	redisqueue.Message
 	ErrorCount int
+	mux        sync.RWMutex
 }
 
 func (m *Message) GetID() string {
