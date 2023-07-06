@@ -62,4 +62,8 @@ type Runtime interface {
 	GetHandlerPrefix(key string) []func(r *gin.RouterGroup, hand ...*gin.HandlerFunc)
 
 	GetStreamMessage(id, stream string, value map[string]interface{}) (storage.Messager, error)
+
+	// SetFilesystemAdapter filesystem
+	SetFilesystemAdapter(storage.AdapterFilesystem)
+	GetFilesystemAdapter() storage.AdapterFilesystem
 }
