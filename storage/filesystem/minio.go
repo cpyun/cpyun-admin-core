@@ -2,11 +2,15 @@ package filesystem
 
 import (
 	"context"
-	"log"
+	"errors"
+	"github.com/cpyun/cpyun-admin-core/storage"
 	"mime/multipart"
 	"path/filepath"
+	"reflect"
 
 	"github.com/minio/minio-go/v7"
+
+	log "github.com/cpyun/cpyun-admin-core/logger"
 )
 
 type Minio struct {
@@ -20,7 +24,8 @@ func NewMinio(endpoint string, options *minio.Options, bucketName string) *Minio
 
 	s3Client, err := minio.New(endpoint, options)
 	if err != nil {
-		log.Println(err)
+		log.Fatal("File system initialization failed, err: ", err)
+		return nil
 	}
 
 	return &Minio{
@@ -57,7 +62,7 @@ func (m *Minio) PutFile(path string, file *multipart.FileHeader, rule string) (m
 func (m *Minio) PutFileAs(path string, file *multipart.FileHeader, name string) (minio.UploadInfo, error) {
 	src, err := file.Open()
 	if err != nil {
-		log.Fatalln(err)
+		log.Error("File save failed, err: ", err)
 		return minio.UploadInfo{}, err
 	}
 	defer src.Close()
@@ -86,9 +91,10 @@ func (m *Minio) GetObject(objectName string) *minio.Object {
 
 	object, err := m.client.GetObject(m.ctx, m.bucketName, objectName, getObjectOptions)
 	if err != nil {
-		log.Fatalln(err)
+		log.Error("Failed to obtain file, err: ", err)
 		return &minio.Object{}
 	}
+	defer object.Close()
 
 	return object
 }
@@ -104,7 +110,28 @@ func (m *Minio) RemoveObject(objectName string) bool {
 	return true
 }
 
+func (m Minio) GetStore() {
+
+}
+
 // GetClient 获取客户端
 func (m *Minio) GetClient() *minio.Client {
 	return m.client
+}
+
+func CovertInterfaceToStruct(face storage.AdapterFilesystem) (*Minio, error) {
+	value := reflect.ValueOf(face)
+	if value.IsNil() {
+		return nil, errors.New("value is nil")
+	} else if value.Kind() != reflect.Ptr {
+		return nil, errors.New("error of kind [pointer]")
+	}
+
+	//// 取数据
+	//value = value.Elem()
+	//if value.Kind() != reflect.Struct {
+	//	return minio, errors.New("not a struct")
+	//}
+
+	return value.Interface().(*Minio), nil
 }

@@ -9,7 +9,6 @@ import (
 
 type FileSystem struct {
 	ctx        context.Context
-	client     *minio.Client
 	store      storage.AdapterFilesystem
 	bucketName string
 }
@@ -33,12 +32,12 @@ func (f *FileSystem) String() string {
 }
 
 // PutFile 保存文件
-func (f *FileSystem) PutFile(path string, file *multipart.FileHeader, rule string) {
-	f.store.PutFile(path, file, rule)
+func (f *FileSystem) PutFile(path string, file *multipart.FileHeader, rule string) (minio.UploadInfo, error) {
+	return f.store.PutFile(path, file, rule)
 }
 
 // GetObject 获取
-func (f *FileSystem) GetObject(objectName string) string {
+func (f *FileSystem) GetObject(objectName string) *minio.Object {
 	return f.store.GetObject(objectName)
 }
 
@@ -58,7 +57,7 @@ func (f *FileSystem) SetBucket(bucketName string) *FileSystem {
 	return f
 }
 
-// GetS3Client ""
-func (f *FileSystem) GetS3Client() *minio.Client {
-	return f.client
+// GetStore ""
+func (f *FileSystem) GetStore() storage.AdapterFilesystem {
+	return f.store
 }

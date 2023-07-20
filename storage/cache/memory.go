@@ -22,8 +22,9 @@ func NewMemory() *Memory {
 }
 
 type Memory struct {
-	items *sync.Map
-	mutex sync.RWMutex
+	items  *sync.Map
+	mutex  sync.RWMutex
+	prefix string
 }
 
 func (*Memory) String() string {
@@ -31,6 +32,10 @@ func (*Memory) String() string {
 }
 
 func (m *Memory) connect() {
+}
+
+func (m *Memory) SetPrefix(s string) {
+	m.prefix = s
 }
 
 func (m *Memory) Get(key string) (string, error) {

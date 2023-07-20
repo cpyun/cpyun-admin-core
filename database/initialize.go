@@ -35,7 +35,7 @@ func openDatabase(host string, c *config.Database) {
 			c.Registers[i].Tables)
 	}
 	resolverConfig := toolsDB.NewConfigure(c.Source, c.MaxIdleConns, c.MaxOpenConns, c.ConnMaxIdleTime, c.ConnMaxLifeTime, registers)
-	db, err := resolverConfig.Init(getGormOption(c.LoggerMode), opens["mysql"])
+	db, err := resolverConfig.Init(getGormOption(c.LoggerMode), opens[c.Driver])
 	if err != nil {
 		log.Fatal("failed to connect database:" + err.Error())
 	}

@@ -2,6 +2,9 @@ package cache
 
 import (
 	"context"
+	"errors"
+	"github.com/cpyun/cpyun-admin-core/storage"
+	"reflect"
 	"time"
 
 	"github.com/redis/go-redis/v9"
@@ -9,17 +12,20 @@ import (
 
 // Redis cache implement
 type Redis struct {
+	ctx    context.Context
 	client *redis.Client
+	prefix string
 }
-
-var ctx = context.Background()
 
 // NewRedis redis模式
 func NewRedis(client *redis.Client, options *redis.Options) (*Redis, error) {
 	if client == nil {
 		client = redis.NewClient(options)
 	}
+
+	ctx := context.TODO()
 	r := &Redis{
+		ctx:    ctx,
 		client: client,
 	}
 	err := r.connect()
@@ -27,7 +33,6 @@ func NewRedis(client *redis.Client, options *redis.Options) (*Redis, error) {
 		return nil, err
 	}
 
-	ctx = context.TODO()
 	return r, nil
 }
 
@@ -38,50 +43,79 @@ func (*Redis) String() string {
 // connect connect test
 func (r *Redis) connect() error {
 	var err error
-	_, err = r.client.Ping(ctx).Result()
+	_, err = r.client.Ping(r.ctx).Result()
 	return err
+}
+
+func (r *Redis) SetPrefix(s string) {
+	r.prefix = s
 }
 
 // Get from key
 func (r *Redis) Get(key string) (string, error) {
-	return r.client.Get(ctx, key).Result()
+	key = r.prefix + key
+	return r.client.Get(r.ctx, key).Result()
 }
 
 // Set value with key and expire time
 func (r *Redis) Set(key string, val interface{}, expire int) error {
-	return r.client.Set(ctx, key, val, time.Duration(expire)*time.Second).Err()
+	key = r.prefix + key
+	return r.client.Set(r.ctx, key, val, time.Duration(expire)*time.Second).Err()
 }
 
 // Del delete key in redis
 func (r *Redis) Del(key string) error {
-	return r.client.Del(ctx, key).Err()
+	key = r.prefix + key
+	return r.client.Del(r.ctx, key).Err()
 }
 
 // HashGet from key
 func (r *Redis) HashGet(hk, key string) (string, error) {
-	return r.client.HGet(ctx, hk, key).Result()
+	key = r.prefix + key
+	return r.client.HGet(r.ctx, hk, key).Result()
 }
 
 // HashDel delete key in specify redis's hashtable
 func (r *Redis) HashDel(hk, key string) error {
-	return r.client.HDel(ctx, hk, key).Err()
+	key = r.prefix + key
+	return r.client.HDel(r.ctx, hk, key).Err()
 }
 
-// Increase
+// Increase value
 func (r *Redis) Increase(key string) error {
-	return r.client.Incr(ctx, key).Err()
+	key = r.prefix + key
+	return r.client.Incr(r.ctx, key).Err()
 }
 
 func (r *Redis) Decrease(key string) error {
-	return r.client.Decr(ctx, key).Err()
+	key = r.prefix + key
+	return r.client.Decr(r.ctx, key).Err()
 }
 
-// Set ttl
+// Expire Set ttl
 func (r *Redis) Expire(key string, dur time.Duration) error {
-	return r.client.Expire(ctx, key, dur).Err()
+	key = r.prefix + key
+	return r.client.Expire(r.ctx, key, dur).Err()
 }
 
 // GetClient 暴露原生client
 func (r *Redis) GetClient() *redis.Client {
 	return r.client
+}
+
+func CovertInterfaceToStruct(face storage.AdapterCache) (*Redis, error) {
+	value := reflect.ValueOf(face)
+	if value.IsNil() {
+		return nil, errors.New("value is nil")
+	} else if value.Kind() != reflect.Ptr {
+		return nil, errors.New("error of kind [pointer]")
+	}
+
+	//// 取数据
+	//value = value.Elem()
+	//if value.Kind() != reflect.Struct {
+	//	return minio, errors.New("not a struct")
+	//}
+
+	return value.Interface().(*Redis), nil
 }
