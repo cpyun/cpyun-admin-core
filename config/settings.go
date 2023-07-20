@@ -29,8 +29,8 @@ func (e *settings) init() {
 
 // 回调函数
 func (e *settings) runCallback() {
-	for i := range e.callbacks {
-		e.callbacks[i]()
+	for _, callback := range e.callbacks {
+		callback()
 	}
 }
 
@@ -61,11 +61,12 @@ func Setup(s string, fs ...func()) {
 	}
 
 	//1. 读取配置
+	driver.WithBindEnv("")
 	driver.NewSource(s)
 	driver.WithBind(Settings)
 
 	// 绑定单个结构体数据
-	driver.WithBindKey("extend", Settings.Extend)
+	//driver.WithBindKey("extend", Settings.Extend)
 
 	// 初始化配置
 	_cfg = &settings{

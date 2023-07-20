@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"github.com/minio/minio-go/v7"
 	"mime/multipart"
 	"time"
 
@@ -13,6 +14,7 @@ const (
 
 type AdapterCache interface {
 	String() string
+	SetPrefix(string)
 	Get(key string) (string, error)
 	Set(key string, val interface{}, expire int) error
 	Del(key string) error
@@ -54,7 +56,7 @@ type AdapterLocker interface {
 // AdapterFilesystem 文件系统
 type AdapterFilesystem interface {
 	String() string
-	PutFile(path string, file *multipart.FileHeader, rule string)
-	GetObject(objectName string) string
+	PutFile(path string, file *multipart.FileHeader, rule string) (minio.UploadInfo, error)
+	GetObject(objectName string) *minio.Object
 	RemoveObject(file string) bool
 }
