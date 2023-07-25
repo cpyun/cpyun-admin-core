@@ -186,7 +186,7 @@ func (l *zapLog) Options() logger.Options {
 }
 
 //
-func NewLogger(opts ...logger.Option) (logger.Logger, error) {
+func NewZap(opts ...logger.Option) (logger.Logger, error) {
 	// Default options
 	options := logger.Options{
 		Level:   logger.InfoLevel,

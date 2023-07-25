@@ -11,15 +11,22 @@ type options struct {
 	stdout     string
 	timeFormat string //时间格式
 	cap        uint
+	maxAge     uint
+	maxBackups uint
+	compress   bool
 }
 
 func setDefault() options {
 	return options{
 		driver:     "default",
-		path:       "temp/logs",
+		path:       "temp/logs/warn.log",
 		level:      "warn",
 		stdout:     "default",
 		timeFormat: time.RFC3339,
+		cap:        0,
+		maxAge:     0,
+		maxBackups: 0,
+		compress:   false,
 	}
 }
 
@@ -56,5 +63,23 @@ func WithTimeFormat(s string) OptionFunc {
 func WithCap(n uint) OptionFunc {
 	return func(o *options) {
 		o.cap = n
+	}
+}
+
+func WithMaxAge(n uint) OptionFunc {
+	return func(o *options) {
+		o.maxAge = n
+	}
+}
+
+func WithMaxBackups(n uint) OptionFunc {
+	return func(o *options) {
+		o.maxBackups = n
+	}
+}
+
+func WithCompress(n bool) OptionFunc {
+	return func(o *options) {
+		o.compress = n
 	}
 }

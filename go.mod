@@ -33,6 +33,7 @@ require (
 	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa
 	google.golang.org/grpc v1.48.0
 	google.golang.org/protobuf v1.28.1
+	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 	gorm.io/driver/mysql v1.3.5
 	gorm.io/driver/postgres v1.3.4
 	gorm.io/gorm v1.23.8
