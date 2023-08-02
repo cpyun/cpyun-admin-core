@@ -107,7 +107,7 @@ func (e *Application) GetEngine() http.Handler {
 
 // GetRouter 获取路由表
 func (e *Application) GetRouter() []Router {
-	return e.setRouter()
+	return e.routers
 }
 
 // setRouter 设置路由表

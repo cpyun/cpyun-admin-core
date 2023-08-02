@@ -12,16 +12,17 @@ var (
 )
 
 type settings struct {
-	Settings  Config
+	prefix    string // 前缀
+	settings  Config
 	callbacks []func()
 }
 
 // 初始化
 func (e *settings) init() {
 	// 配置日志
-	e.Settings.Logger.Setup()
+	e.settings.Logger.Setup()
 	//配置多数据库
-	e.Settings.multiDatabase()
+	e.settings.multiDatabase()
 
 	// 调用回调函数
 	e.runCallback()
@@ -70,7 +71,7 @@ func Setup(s string, fs ...func()) {
 
 	// 初始化配置
 	_cfg = &settings{
-		Settings:  *Settings,
+		settings:  *Settings,
 		callbacks: fs,
 	}
 	_cfg.init()
