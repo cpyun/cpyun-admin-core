@@ -13,8 +13,8 @@ import (
 var _redis *redis.Client
 
 type Redis struct {
-	Network    string `yaml:"network" json:"network"`
-	Addr       string `yaml:"addr" json:"addr"` // 服务器地址:端口
+	Network    string `yaml:"network" json:"network"` //
+	Addr       string `yaml:"addr" json:"addr"`       // 服务器地址:端口
 	Username   string `yaml:"username" json:"username"`
 	Password   string `yaml:"password" json:"password"`
 	DB         int    `yaml:"db" json:"db"`
