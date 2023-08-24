@@ -11,7 +11,7 @@ type Config struct {
 	Locker      *Locker               `json:"locker" yaml:"locker"`
 	JWT         *Jwt                  `mapstructure:"jwt" json:"jwt" yaml:"jwt"`
 	Redis       Redis                 `mapstructure:"redis" json:"redis" yaml:"redis"`
-	Casbin      Casbin                `mapstructure:"casbin" json:"casbin" yaml:"casbin"`
+	Casbin      *Casbin               `mapstructure:"casbin" json:"casbin" yaml:"casbin"`
 	Extend      interface{}           `yaml:"extend"`
 }
 

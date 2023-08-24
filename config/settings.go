@@ -58,6 +58,7 @@ func Setup(s string, fs ...func()) {
 		Queue:       QueueConfig,
 		Locker:      LockerConfig,
 		JWT:         JwtConfig,
+		Casbin:      CasbinConfig,
 		Extend:      ExtendConfig,
 	}
 
