@@ -2,13 +2,14 @@ package auth
 
 import (
 	"crypto/rsa"
-	"errors"
-	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v4"
 	"io/ioutil"
 	"net/http"
 	"strings"
 	"time"
+
+	"errors"
+	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v4"
 )
 
 const JwtPayloadKey = "JWT_PAYLOAD"
@@ -207,19 +208,19 @@ var (
 	RKey = "r"
 
 	// RoleIdKey 角色id  Old
-	RoleIdKey   = "roleid"
+	RoleIdKey = "roleid"
 
 	// RoleKey 角色名称  Old
-	RoleKey     = "rolekey"
+	RoleKey = "rolekey"
 
 	// RoleNameKey 角色名称  Old
 	RoleNameKey = "rolename"
 
 	// RoleIdKey 部门id
-	DeptId   = "deptId"
+	DeptId = "deptId"
 
 	// RoleKey 部门名称
-	DeptName     = "deptName"
+	DeptName = "deptName"
 )
 
 // New for check error with GinJWTMiddleware
@@ -315,8 +316,8 @@ func (mw *GinJWTMiddleware) MiddlewareInit() error {
 	if mw.LoginResponse == nil {
 		mw.LoginResponse = func(c *gin.Context, code int, token string, expire time.Time) {
 			c.JSON(http.StatusOK, gin.H{
-				"code":   http.StatusOK,
-				"msg": "success",
+				"code": http.StatusOK,
+				"msg":  "success",
 				"data": map[string]interface{}{
 					"token":  token,
 					"expire": expire.Format(time.RFC3339),
@@ -328,8 +329,8 @@ func (mw *GinJWTMiddleware) MiddlewareInit() error {
 	if mw.RefreshResponse == nil {
 		mw.RefreshResponse = func(c *gin.Context, code int, token string, expire time.Time) {
 			c.JSON(http.StatusOK, gin.H{
-				"code":   http.StatusOK,
-				"msg": "success",
+				"code": http.StatusOK,
+				"msg":  "success",
 				"data": map[string]interface{}{
 					"token":  token,
 					"expire": expire.Format(time.RFC3339),

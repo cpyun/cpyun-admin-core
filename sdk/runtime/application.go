@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/casbin/casbin/v3"
+	"github.com/casbin/casbin/v2"
 	"github.com/gin-gonic/gin"
 	"github.com/robfig/cron/v3"
 	"gorm.io/gorm"
@@ -107,7 +107,7 @@ func (e *Application) GetEngine() http.Handler {
 
 // GetRouter 获取路由表
 func (e *Application) GetRouter() []Router {
-	return e.setRouter()
+	return e.routers
 }
 
 // setRouter 设置路由表

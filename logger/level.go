@@ -7,7 +7,6 @@ import (
 
 type Level int8
 
-
 const (
 	// TraceLevel level. Designates finer-grained informational events than the Debug.
 	TraceLevel Level = iota - 2
@@ -42,7 +41,6 @@ func (l Level) String() string {
 	return ""
 }
 
-
 // LevelForGorm 转换成gorm日志级别
 func (l Level) LevelForGorm() int {
 	switch l {
@@ -56,7 +54,6 @@ func (l Level) LevelForGorm() int {
 		return 1
 	}
 }
-
 
 // Enabled returns true if the given level is at or above this level.
 func (l Level) Enabled(lvl Level) bool {
@@ -80,7 +77,7 @@ func GetLevel(levelStr string) (Level, error) {
 	case FatalLevel.String():
 		return FatalLevel, nil
 	}
-	return InfoLevel, fmt.Errorf("Unknown Level String: '%s', defaulting to InfoLevel", levelStr)
+	return InfoLevel, fmt.Errorf("unknown level string: '%s', defaulting to InfoLevel", levelStr)
 }
 
 func Info(args ...interface{}) {
@@ -133,7 +130,7 @@ func Fatalf(template string, args ...interface{}) {
 	os.Exit(1)
 }
 
-// Returns true if the given level is at or lower the current logger level
+// V Returns true if the given level is at or lower the current logger level
 func V(lvl Level, log Logger) bool {
 	l := DefaultLogger
 	if log != nil {

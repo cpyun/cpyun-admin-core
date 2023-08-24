@@ -1,10 +1,11 @@
 package user
 
 import (
-	"github.com/cpyun/cpyun-admin-core/sdk/pkg"
-	jwt "github.com/cpyun/cpyun-admin-core/sdk/pkg/auth"
 	"fmt"
 	"github.com/gin-gonic/gin"
+
+	"github.com/cpyun/cpyun-admin-core/sdk/pkg"
+	jwt "github.com/cpyun/cpyun-admin-core/sdk/pkg/auth"
 )
 
 func ExtractClaims(c *gin.Context) jwt.MapClaims {

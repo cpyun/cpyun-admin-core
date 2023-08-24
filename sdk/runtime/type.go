@@ -3,7 +3,7 @@ package runtime
 import (
 	"net/http"
 
-	"github.com/casbin/casbin/v3"
+	"github.com/casbin/casbin/v2"
 	"github.com/gin-gonic/gin"
 	"github.com/robfig/cron/v3"
 	"gorm.io/gorm"
