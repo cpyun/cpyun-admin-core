@@ -47,19 +47,22 @@ func (m *Minio) SetContext(ctx context.Context) *Minio {
 }
 
 // SetBucket 设置bucket
-func (m *Minio) SetBucket(bucketName string) *Minio {
+func (m *Minio) SetBucket(bucketName string) {
 	m.bucketName = bucketName
-	return m
 }
 
 // PutFile 保存文件
-func (m *Minio) PutFile(path string, file *multipart.FileHeader, rule string) (minio.UploadInfo, error) {
+// rootPath 文件根目录 (eg: “”|“words/”|“images/”)
+// file 文件
+// rule string 如果为空，则由系统自动生成（带目录,不带后缀）(eg:"20200101/file")
+func (m *Minio) PutFile(rootPath string, file *multipart.FileHeader, rule string) (minio.UploadInfo, error) {
 	name := generateHashName(rule) + filepath.Ext(file.Filename)
-	return m.PutFileAs(path, file, name)
+	filePath := rootPath + name
+	return m.PutFileAs(filePath, file)
 }
 
 // PutFileAs 指定文件名保存文件
-func (m *Minio) PutFileAs(path string, file *multipart.FileHeader, name string) (minio.UploadInfo, error) {
+func (m *Minio) PutFileAs(path string, file *multipart.FileHeader) (minio.UploadInfo, error) {
 	src, err := file.Open()
 	if err != nil {
 		log.Error("File save failed, err: ", err)
@@ -71,7 +74,7 @@ func (m *Minio) PutFileAs(path string, file *multipart.FileHeader, name string) 
 		ContentType: file.Header.Get(" Content-Type"),
 	}
 
-	objectName := path + `/` + name
+	objectName := path
 
 	info, err := m.client.PutObject(m.ctx, m.bucketName, objectName, src, file.Size, putObjectOptions)
 	if err != nil {
