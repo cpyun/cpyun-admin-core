@@ -33,12 +33,13 @@ func New(name string, opts ...Option) server.Runnable {
 		name: name,
 		opts: setDefaultOption(),
 	}
-	s.Options(opts...)
+
+	s.applyOptions(opts...)
 	return s
 }
 
 // Options 设置参数
-func (e *Server) Options(opts ...Option) {
+func (e *Server) applyOptions(opts ...Option) {
 	for _, o := range opts {
 		o(&e.opts)
 	}
@@ -87,7 +88,6 @@ func (e *Server) Start(ctx context.Context) (err error) {
 		e.opts.startedHook()
 	}
 
-	//fmt.Println(pkg.Green("Web server run at:"))
 	fmt.Printf("- [%s] Server listening on %s \r\n", e.name, e.srv.Addr)
 	return nil
 }
