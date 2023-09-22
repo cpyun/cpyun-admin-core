@@ -20,8 +20,7 @@ import (
 func generateHashName(rule string) string {
 	if rule == "" {
 		nowTime := time.Now()
-		today := nowTime.Format("2006-01-02")
-
+		today := nowTime.Format("20060102")
 		timeUnixNano := nowTime.UnixNano()
 		m := md5.Sum([]byte(strconv.FormatInt(timeUnixNano, 10)))
 		md5Name := hex.EncodeToString(m[:])
