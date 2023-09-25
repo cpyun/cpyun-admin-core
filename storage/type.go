@@ -57,7 +57,6 @@ type AdapterLocker interface {
 type AdapterFilesystem interface {
 	String() string
 	PutFile(rootPath string, file *multipart.FileHeader, rule string) (minio.UploadInfo, error)
-	PutFileAs(path string, file *multipart.FileHeader) (minio.UploadInfo, error)
 	GetObject(objectName string) *minio.Object
 	RemoveObject(file string) bool
 }

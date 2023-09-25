@@ -53,11 +53,12 @@ func (f *FileSystem) SetBucket(bucketName string) *FileSystem {
 // 保存文件
 func (f FileSystem) PutFile(path string, file *multipart.FileHeader, rule string) (minio.UploadInfo, error) {
 	name := generateHashName(rule) + filepath.Ext(file.Filename)
-	return f.PutFileAs(path, file, name)
+	filePath := filepath.Join(path, name)
+	return f.PutFileAs(filePath, file)
 }
 
 // 指定文件名保存文件
-func (f FileSystem) PutFileAs(path string, file *multipart.FileHeader, name string) (minio.UploadInfo, error) {
+func (f FileSystem) PutFileAs(path string, file *multipart.FileHeader) (minio.UploadInfo, error) {
 	src, err := file.Open()
 	if err != nil {
 		log.Fatalln(err)
@@ -69,7 +70,7 @@ func (f FileSystem) PutFileAs(path string, file *multipart.FileHeader, name stri
 		ContentType: file.Header.Get(" Content-Type"),
 	}
 
-	objectName := path + `/` + name
+	objectName := path
 
 	info, err := f.client.PutObject(f.ctx, f.bucketName, objectName, src, file.Size, putObjectOptions)
 	if err != nil {
