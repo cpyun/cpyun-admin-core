@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/cpyun/cpyun-admin-core/storage"
+	"io"
 	"mime/multipart"
 	"path/filepath"
 	"reflect"
@@ -51,18 +52,7 @@ func (m *Minio) SetBucket(bucketName string) {
 	m.bucketName = bucketName
 }
 
-// PutFile 保存文件
-// rootPath 文件根目录 (eg: “”|“words/”|“images/”)
-// file 文件
-// rule string 如果为空，则由系统自动生成（带目录,不带后缀）(eg:"20200101/file")
-func (m *Minio) PutFile(rootPath string, file *multipart.FileHeader, rule string) (minio.UploadInfo, error) {
-	name := generateHashName(rule) + filepath.Ext(file.Filename)
-	filePath := rootPath + name
-	return m.PutFileAs(filePath, file)
-}
-
-// PutFileAs 指定文件名保存文件
-func (m *Minio) PutFileAs(path string, file *multipart.FileHeader) (minio.UploadInfo, error) {
+func (m *Minio) MultiPartPutFile(path string, file *multipart.FileHeader) (minio.UploadInfo, error) {
 	src, err := file.Open()
 	if err != nil {
 		log.Error("File save failed, err: ", err)
@@ -70,13 +60,29 @@ func (m *Minio) PutFileAs(path string, file *multipart.FileHeader) (minio.Upload
 	}
 	defer src.Close()
 
+	return m.PutFileAs(path, src)
+}
+
+// PutFile 保存文件
+// rootPath 文件根目录 (eg: “”|“words/”|“images/”)
+// file 文件
+// rule string 如果为空，则由系统自动生成（带目录,不带后缀）(eg:"20200101/file")
+func (m *Minio) PutFile(rootPath string, file *multipart.FileHeader, rule string) (minio.UploadInfo, error) {
+	name := generateHashName(rule) + filepath.Ext(file.Filename)
+	filePath := rootPath + name
+	return m.MultiPartPutFile(filePath, file)
+}
+
+// PutFileAs 指定文件名保存文件
+func (m *Minio) PutFileAs(path string, reader io.Reader) (minio.UploadInfo, error) {
 	putObjectOptions := minio.PutObjectOptions{
-		ContentType: file.Header.Get(" Content-Type"),
+		//ContentType: file.Header.Get("Content-Type"),
 	}
 
 	objectName := path
+	//fileSize := reader.
 
-	info, err := m.client.PutObject(m.ctx, m.bucketName, objectName, src, file.Size, putObjectOptions)
+	info, err := m.client.PutObject(m.ctx, m.bucketName, objectName, reader, 10<<3, putObjectOptions)
 	if err != nil {
 		return minio.UploadInfo{}, err
 	}
@@ -95,7 +101,7 @@ func (m *Minio) GetObject(objectName string) *minio.Object {
 	object, err := m.client.GetObject(m.ctx, m.bucketName, objectName, getObjectOptions)
 	if err != nil {
 		log.Error("Failed to obtain file, err: ", err)
-		return &minio.Object{}
+		return nil
 	}
 	defer object.Close()
 
@@ -113,7 +119,7 @@ func (m *Minio) RemoveObject(objectName string) bool {
 	return true
 }
 
-func (m Minio) GetStore() {
+func (m *Minio) GetStore() {
 
 }
 
