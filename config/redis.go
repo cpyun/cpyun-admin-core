@@ -18,9 +18,9 @@ type Redis struct {
 	Username   string `yaml:"username" json:"username"`
 	Password   string `yaml:"password" json:"password"`
 	DB         int    `yaml:"db" json:"db"`
-	PoolSize   int    `yaml:"pool_size" json:"pool_size"`
+	PoolSize   int    `yaml:"pool-size" json:"pool-size"`
 	Tls        *Tls   `yaml:"tls" json:"tls"`
-	MaxRetries int    `yaml:"max_retries" json:"max_retries"`
+	MaxRetries int    `yaml:"max-retries" json:"max-retries"`
 }
 
 type Tls struct {

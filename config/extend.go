@@ -6,7 +6,7 @@ var ExtConfig = new(Extend)
 //  extend:
 //    demo:
 //      name: demo-name
-// 使用方法： config.ExtConfig......即可！！
+// Example： config.ExtConfig......！！
 type Extend struct {
 	Demo Demo // 这里配置对应配置文件的结构即可
 }

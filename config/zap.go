@@ -1,5 +1,7 @@
 package config
 
+// Zap
+// Deprecated: Use Logger instead
 type Zap struct {
 	Level         string `mapstructure:"level" json:"level" yaml:"level"`                            // 级别
 	Format        string `mapstructure:"format" json:"format" yaml:"format"`                         // 输出
