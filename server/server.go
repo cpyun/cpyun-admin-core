@@ -31,7 +31,7 @@ type Server struct {
 }
 
 // New 实例化
-func New(opts ...Option) Manager {
+func New(opts ...Option) *Server {
 	s := &Server{
 		services:               make(map[string]Runnable),
 		errChan:                make(chan error),
@@ -58,18 +58,9 @@ func (e *Server) Add(r ...Runnable) {
 func (e *Server) Start(ctx context.Context) (err error) {
 	e.mutex.Lock()
 	defer e.mutex.Unlock()
-	e.internalCtx, e.internalCancel = context.WithCancel(ctx)
-	stopComplete := make(chan struct{})
-	defer close(stopComplete)
+	e.internalCtx, e.internalCancel = context.WithCancel(context.Background())
 	defer func() {
-		stopErr := e.engageStopProcedure(stopComplete)
-		if stopErr != nil {
-			if err != nil {
-				err = fmt.Errorf("%s, %w", stopErr.Error(), err)
-			} else {
-				err = stopErr
-			}
-		}
+		err = e.shutdownStopComplete(err)
 	}()
 	e.errChan = make(chan error)
 
@@ -87,7 +78,7 @@ func (e *Server) Start(ctx context.Context) (err error) {
 	select {
 	case <-ctx.Done():
 		return nil
-	case err := <-e.errChan:
+	case err = <-e.errChan:
 		return err
 	}
 }
@@ -102,17 +93,28 @@ func (e *Server) startRunnable(r Runnable) {
 	}()
 }
 
-func (e *Server) engageStopProcedure(stopComplete <-chan struct{}) error {
-	var shutdownCancel context.CancelFunc
-	if e.opts.gracefulShutdownTimeout > 0 {
-		e.shutdownCtx, shutdownCancel = context.WithTimeout(
-			context.Background(), e.opts.gracefulShutdownTimeout)
-	} else {
-		e.shutdownCtx, shutdownCancel = context.WithCancel(context.Background())
+func (e *Server) shutdownStopComplete(err error) error {
+	stopComplete := make(chan struct{})
+	defer close(stopComplete)
+	stopErr := e.engageStopProcedure(stopComplete)
+	if stopErr != nil {
+		if err != nil {
+			err = fmt.Errorf("%s, %w", stopErr.Error(), err)
+		} else {
+			err = stopErr
+		}
 	}
-	defer shutdownCancel()
+	return err
+}
+
+func (e *Server) engageStopProcedure(stopComplete <-chan struct{}) error {
+	if e.opts.gracefulShutdownTimeout > 0 {
+		e.shutdownCtx, e.shutdownCancel = context.WithTimeout(context.Background(), e.opts.gracefulShutdownTimeout)
+	} else {
+		e.shutdownCtx, e.shutdownCancel = context.WithCancel(context.Background())
+	}
+	defer e.shutdownCancel()
 	close(e.internalProceduresStop)
-	e.internalCancel()
 
 	go func() {
 		for {
@@ -129,16 +131,17 @@ func (e *Server) engageStopProcedure(stopComplete <-chan struct{}) error {
 	if e.opts.gracefulShutdownTimeout == 0 {
 		return nil
 	}
-	e.mutex.Lock()
-	defer e.mutex.Unlock()
-	return e.waitForRunnableToEnd(shutdownCancel)
+	//e.mutex.Lock()
+	//defer e.mutex.Unlock()
+	return e.waitForRunnableToEnd()
 }
 
-func (e *Server) waitForRunnableToEnd(shutdownCancel context.CancelFunc) error {
-	go func() {
-		e.waitForRunnable.Wait()
-		shutdownCancel()
-	}()
+func (e *Server) waitForRunnableToEnd() error {
+	defer e.internalCancel()
+	//go func() {
+	//	e.waitForRunnable.Wait()
+	//	e.shutdownCancel()
+	//}()
 	<-e.shutdownCtx.Done()
 	if err := e.shutdownCtx.Err(); err != nil && err != context.Canceled {
 		return fmt.Errorf(
@@ -146,4 +149,8 @@ func (e *Server) waitForRunnableToEnd(shutdownCancel context.CancelFunc) error {
 			e.opts.gracefulShutdownTimeout, err)
 	}
 	return nil
+}
+
+func (e *Server) Shutdown(ctx context.Context) (err error) {
+	return e.shutdownStopComplete(err)
 }

@@ -20,3 +20,9 @@ func setDefaultOptions() options {
 		gracefulShutdownTimeout: 5 * time.Second,
 	}
 }
+
+func WithGracefulShutdownTimeout(timeout int64) Option {
+	return func(o *options) {
+		o.gracefulShutdownTimeout = time.Duration(timeout) * time.Second
+	}
+}

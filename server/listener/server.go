@@ -77,13 +77,17 @@ func (e *Server) Start(ctx context.Context) (err error) {
 		if err != nil && err != http.ErrServerClosed {
 			log.Errorf("%s Server start error: %s", e.name, err.Error())
 		}
+	}()
 
-		<-ctx.Done()
-		err = e.Shutdown(ctx)
-		if err != nil {
-			log.Errorf("%S Server shutdown error: %s", e.name, err.Error())
+	go func() {
+		select {
+		case <-ctx.Done():
+			if err = e.Shutdown(ctx); err != nil {
+				log.Errorf("%S Server shutdown error: %s", e.name, err.Error())
+			}
 		}
 	}()
+
 	if e.opts.startedHook != nil {
 		e.opts.startedHook()
 	}

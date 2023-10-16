@@ -15,6 +15,7 @@ import (
 type Manager interface {
 	Add(...Runnable)
 	Start(context.Context) error
+	Shutdown(ctx context.Context) error
 }
 
 type Runnable interface {
