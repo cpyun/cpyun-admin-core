@@ -14,15 +14,6 @@ import (
 	dlog "github.com/cpyun/cpyun-admin-core/debug/log"
 )
 
-func init() {
-	lvl, err := GetLevel(os.Getenv("GO_ADMIN_LOG_LEVEL"))
-	if err != nil {
-		lvl = InfoLevel
-	}
-
-	DefaultLogger = NewHelper(NewLogger(WithLevel(lvl)))
-}
-
 type defaultLogger struct {
 	sync.RWMutex
 	opts Options

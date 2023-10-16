@@ -40,31 +40,26 @@ func SetupLogger(opts ...OptionFunc) log.Logger {
 		log.Fatalf("get logger level error, %s", err.Error())
 	}
 
-	log.DefaultLogger, err = zap.NewZap(
-		log.WithLevel(level),
-		zap.WithTimeFormat(op.timeFormat),
-		zap.WithOutput(output),
-		zap.WithCallerSkip(2),
-	)
-	if err != nil {
-		log.Fatalf("new zap logger error, %s", err.Error())
+	//
+	switch op.driver {
+	case "zap":
+		log.DefaultLogger, err = zap.NewZap(
+			log.WithLevel(level),
+			zap.WithTimeFormat(op.timeFormat),
+			zap.WithOutput(output),
+			zap.WithCallerSkip(2),
+		)
+		if err != nil {
+			log.Fatalf("new zap logger error, %s", err.Error())
+		}
+	case "logrus":
+		log.Fatal("not support logrus")
+	default:
+		log.DefaultLogger = log.NewLogger(
+			log.WithLevel(level),
+			log.WithOutput(output),
+		)
 	}
-	//switch op.driver {
-	//case "zap":
-	//	log.DefaultLogger, err = zap.NewZap(
-	//		log.WithLevel(level),
-	//		zap.WithTimeFormat(op.timeFormat),
-	//		zap.WithOutput(output),
-	//		zap.WithCallerSkip(2),
-	//	)
-	//	if err != nil {
-	//		log.Fatalf("new zap logger error, %s", err.Error())
-	//	}
-	////case "logrus":
-	////	setLogger = logrus.NewLogger(logger.WithLevel(level), logger.WithOutput(output), logrus.ReportCaller())
-	//default:
-	//	log.DefaultLogger = log.NewLogger(log.WithLevel(level), log.WithOutput(output))
-	//}
 
 	return log.DefaultLogger
 }
