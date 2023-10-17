@@ -9,7 +9,7 @@ package server
 
 import "time"
 
-type Option func(*options)
+type OptionFunc func(*options)
 
 type options struct {
 	gracefulShutdownTimeout time.Duration
@@ -21,7 +21,7 @@ func setDefaultOptions() options {
 	}
 }
 
-func WithGracefulShutdownTimeout(timeout int64) Option {
+func WithGracefulShutdownTimeout(timeout int64) OptionFunc {
 	return func(o *options) {
 		o.gracefulShutdownTimeout = time.Duration(timeout) * time.Second
 	}

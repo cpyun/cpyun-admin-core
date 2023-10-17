@@ -47,7 +47,7 @@ func SetupLogger(opts ...OptionFunc) log.Logger {
 			log.WithLevel(level),
 			zap.WithTimeFormat(op.timeFormat),
 			zap.WithOutput(output),
-			zap.WithCallerSkip(2),
+			zap.WithCallerSkip(3),
 		)
 		if err != nil {
 			log.Fatalf("new zap logger error, %s", err.Error())

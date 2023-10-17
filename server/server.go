@@ -31,17 +31,21 @@ type Server struct {
 }
 
 // New 实例化
-func New(opts ...Option) *Server {
+func New(opts ...OptionFunc) *Server {
 	s := &Server{
 		services:               make(map[string]Runnable),
 		errChan:                make(chan error),
 		internalProceduresStop: make(chan struct{}),
 	}
 	s.opts = setDefaultOptions()
-	for i := range opts {
-		opts[i](&s.opts)
-	}
+	s.withOptions(opts...)
 	return s
+}
+
+func (e *Server) withOptions(opts ...OptionFunc) {
+	for _, opt := range opts {
+		opt(&e.opts)
+	}
 }
 
 // Add add runnable
