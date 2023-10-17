@@ -23,7 +23,6 @@ require (
 	github.com/minio/minio-go/v7 v7.0.34
 	github.com/mojocn/base64Captcha v1.3.5
 	github.com/nsqio/go-nsq v1.1.0
-	github.com/prometheus/client_golang v1.13.0
 	github.com/redis/go-redis/v9 v9.0.3
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/robinjoseph08/redisqueue/v2 v2.1.0
@@ -35,6 +34,7 @@ require (
 	golang.org/x/crypto v0.0.0-20221005025214-4161e89ecf1b
 	google.golang.org/grpc v1.48.0
 	google.golang.org/protobuf v1.28.1
+	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 	gorm.io/driver/clickhouse v0.5.1
 	gorm.io/driver/mysql v1.4.1
@@ -103,6 +103,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.0.1 // indirect
 	github.com/pierrec/lz4/v4 v4.1.17 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/prometheus/client_golang v1.13.0 // indirect
 	github.com/prometheus/client_model v0.2.0 // indirect
 	github.com/prometheus/common v0.37.0 // indirect
 	github.com/prometheus/procfs v0.8.0 // indirect
@@ -133,7 +134,6 @@ require (
 	google.golang.org/genproto v0.0.0-20220617124728-180714bec0ad // indirect
 	gopkg.in/AlecAivazis/survey.v1 v1.8.5 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
-	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df // indirect
 	gopkg.in/ini.v1 v1.66.6 // indirect
 	gopkg.in/kyokomi/emoji.v1 v1.5.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect

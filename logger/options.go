@@ -57,7 +57,7 @@ func WithName(name string) Option {
 	}
 }
 
-func SetOption(k, v interface{}) Option {
+func SetContext(k, v interface{}) Option {
 	return func(o *Options) {
 		if o.Context == nil {
 			o.Context = context.Background()

@@ -16,38 +16,38 @@ type Options struct {
 type callerSkipKey struct{}
 
 func WithCallerSkip(i int) logger.Option {
-	return logger.SetOption(callerSkipKey{}, i)
+	return logger.SetContext(callerSkipKey{}, i)
 }
 
 type configKey struct{}
 
 // WithConfig pass zap.Config to logger
 func WithConfig(c zap.Config) logger.Option {
-	return logger.SetOption(configKey{}, c)
+	return logger.SetContext(configKey{}, c)
 }
 
 type encoderConfigKey struct{}
 
 // WithEncoderConfig pass zapcore.EncoderConfig to logger
 func WithEncoderConfig(c zapcore.EncoderConfig) logger.Option {
-	return logger.SetOption(encoderConfigKey{}, c)
+	return logger.SetContext(encoderConfigKey{}, c)
 }
 
 type namespaceKey struct{}
 
 func WithNamespace(namespace string) logger.Option {
-	return logger.SetOption(namespaceKey{}, namespace)
+	return logger.SetContext(namespaceKey{}, namespace)
 }
 
 type writerKey struct{}
 
 func WithOutput(out io.Writer) logger.Option {
-	return logger.SetOption(writerKey{}, out)
+	return logger.SetContext(writerKey{}, out)
 }
 
 // 时间格式
 type timeFormatKey struct{}
 
 func WithTimeFormat(timeFormat string) logger.Option {
-	return logger.SetOption(timeFormatKey{}, timeFormat)
+	return logger.SetContext(timeFormatKey{}, timeFormat)
 }
