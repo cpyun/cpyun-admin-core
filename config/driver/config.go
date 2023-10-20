@@ -1,7 +1,8 @@
 package driver
 
-import (
-	"context"
+var (
+	// DefaultConfig Default Config Manager
+	DefaultConfig Config
 )
 
 type Config interface {
@@ -10,25 +11,14 @@ type Config interface {
 }
 
 //
-type entity interface {
+type Entity interface {
 	OnChange()
 }
 
 //
-type Options struct {
-	Context context.Context
-
-	Entity entity
-}
-
-type OptionFunc func(o *Options)
-
-var (
-	// DefaultConfig Default Config Manager
-	DefaultConfig Config
-)
+//type OptionFunc func(o *Options)
 
 // NewConfig returns new config
-func NewConfig(opts ...OptionFunc) (Config, error) {
+func NewConfig(opts ...Option) (Config, error) {
 	return newConfig(opts...)
 }

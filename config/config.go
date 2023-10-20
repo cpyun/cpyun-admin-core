@@ -13,13 +13,33 @@ type Config struct {
 	Redis       Redis                 `mapstructure:"redis" json:"redis" yaml:"redis"`
 	Casbin      *Casbin               `mapstructure:"casbin" json:"casbin" yaml:"casbin"`
 	Extend      interface{}           `yaml:"extend"`
+	//
+	opts setOptions
+}
+
+func (c *Config) OnChange() {
+
 }
 
 //多db改造
-func (s *Config) multiDatabase() {
-	if len(*s.Databases) == 0 {
-		*s.Databases = map[string]*Database{
-			"*": s.Database,
+func (c *Config) multiDatabase() {
+	if len(*c.Databases) == 0 {
+		*c.Databases = map[string]*Database{
+			"*": c.Database,
 		}
 	}
+}
+
+func (c *Config) runCallback() {
+	for _, callback := range c.opts.callbacks {
+		callback()
+	}
+}
+
+func (c *Config) init() {
+	c.Logger.Setup()
+	c.multiDatabase()
+
+	//调用回调函数
+	c.runCallback()
 }

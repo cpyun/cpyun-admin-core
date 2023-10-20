@@ -19,7 +19,7 @@ type FileSystem struct {
 
 func New() *FileSystem {
 	ctx := context.Background()
-	option := config.Settings.Filesystem.Minio
+	option := config.FilesystemConfig.Minio
 
 	s3Client, err := minio.New(option.Endpoint, &minio.Options{
 		Creds:  credentials.NewStaticV4(option.AccessKeyID, option.SecretAccessKey, ""),

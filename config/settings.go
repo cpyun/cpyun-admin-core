@@ -2,44 +2,45 @@ package config
 
 import (
 	"github.com/cpyun/cpyun-admin-core/config/driver"
+	"github.com/cpyun/cpyun-admin-core/config/driver/source"
 	"log"
 )
 
 var (
 	ExtendConfig interface{}
 	Settings     *Config
-	_cfg         *settings
+	//_cfg         *settings
 )
 
-type settings struct {
-	prefix    string // 前缀
-	settings  Config
-	callbacks []func()
-}
-
-// 初始化
-func (e *settings) init() {
-	// 配置日志
-	e.settings.Logger.Setup()
-	//配置多数据库
-	e.settings.multiDatabase()
-
-	// 调用回调函数
-	e.runCallback()
-}
-
-// 回调函数
-func (e *settings) runCallback() {
-	for _, callback := range e.callbacks {
-		callback()
-	}
-}
-
-// OnChange 修改配置
-func (e *settings) OnChange() {
-	e.init()
-	log.Println("!!! config change and reload")
-}
+//type settings struct {
+//	prefix    string // 前缀
+//	settings  Config
+//	callbacks []func()
+//}
+//
+//// 初始化
+//func (e *settings) init() {
+//	// 配置日志
+//	e.settings.Logger.Setup()
+//	//配置多数据库
+//	e.settings.multiDatabase()
+//
+//	// 调用回调函数
+//	e.runCallback()
+//}
+//
+//// 回调函数
+//func (e *settings) runCallback() {
+//	for _, callback := range e.callbacks {
+//		callback()
+//	}
+//}
+//
+//// OnChange 修改配置
+//func (e *settings) OnChange() {
+//	e.init()
+//	log.Println("!!! config change and reload")
+//}
 
 // Setup
 // @description   Setup 载入配置文件
@@ -47,7 +48,9 @@ func (e *settings) OnChange() {
 // @param     s         string        "配置文件路径"
 // @param     fs        func          "回调函数"
 // @return
-func Setup(s string, fs ...func()) {
+func Setup(fs ...SetOptionFuc) {
+	var err error
+
 	Settings = &Config{
 		Application: ApplicationConfig,
 		Database:    DatabaseConfig,
@@ -62,18 +65,45 @@ func Setup(s string, fs ...func()) {
 		Extend:      ExtendConfig,
 	}
 
-	//1. 读取配置
-	driver.WithBindEnv("")
-	driver.NewSource(s)
-	driver.WithBind(Settings)
+	for _, f := range fs {
+		f(&Settings.opts)
+	}
 
-	// 绑定单个结构体数据
-	//driver.WithBindKey("extend", Settings.Extend)
+	//
+	driver.DefaultConfig, err = driver.NewConfig(
+		driver.WithSource(Settings.opts.source...),
+		driver.WithEntity(Settings),
+	)
+	if err != nil {
+		log.Fatalln("new config object fail: ", err.Error())
+	}
+
+	Settings.init()
 
 	// 初始化配置
-	_cfg = &settings{
-		settings:  *Settings,
-		callbacks: fs,
+	//_cfg = &settings{
+	//	settings:  *Settings,
+	//	callbacks: fs,
+	//}
+	//_cfg.init()
+}
+
+type setOptions struct {
+	source    []source.Source
+	callbacks []func()
+}
+
+type SetOptionFuc func(*setOptions)
+
+func WithSource(s ...source.Source) SetOptionFuc {
+	return func(o *setOptions) {
+		o.source = append(o.source, s...)
 	}
-	_cfg.init()
+
+}
+
+func WithCallback(fs ...func()) SetOptionFuc {
+	return func(o *setOptions) {
+		o.callbacks = fs
+	}
 }

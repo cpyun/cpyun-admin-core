@@ -19,7 +19,7 @@ func (e *Cache) Setup() (storage.AdapterCache, error) {
 	var cacheAdapter storage.AdapterCache
 
 	if e.Driver == "redis" {
-		e.Redis = &Settings.Redis
+		//e.Redis = &Settings.Redis
 
 		options, err := e.Redis.GetRedisOptions()
 		if err != nil {
