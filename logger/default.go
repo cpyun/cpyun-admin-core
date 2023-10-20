@@ -152,8 +152,8 @@ func (l *defaultLogger) Options() Options {
 	return opts
 }
 
-// NewLogger builds a new logger based on options
-func NewLogger(opts ...Option) Logger {
+// NewDefaultLogger builds a new logger based on options
+func NewDefaultLogger(opts ...Option) Logger {
 	// Default options
 	options := Options{
 		Level:           InfoLevel,

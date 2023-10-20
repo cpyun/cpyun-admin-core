@@ -55,7 +55,7 @@ func SetupLogger(opts ...OptionFunc) log.Logger {
 	case "logrus":
 		log.Fatal("not support logrus")
 	default:
-		log.DefaultLogger = log.NewLogger(
+		log.DefaultLogger = log.NewDefaultLogger(
 			log.WithLevel(level),
 			log.WithOutput(output),
 		)

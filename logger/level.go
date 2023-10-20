@@ -11,7 +11,7 @@ func init() {
 		lvl = InfoLevel
 	}
 
-	DefaultLogger = NewLogger(WithLevel(lvl))
+	DefaultLogger = NewHelper(NewDefaultLogger(WithLevel(lvl)))
 }
 
 type Level int8
