@@ -48,7 +48,7 @@ func (e *Server) withOptions(opts ...OptionFunc) {
 	}
 }
 
-// Add add runnable
+// Add 添加 runnable
 func (e *Server) Add(r ...Runnable) {
 	if e.services == nil {
 		e.services = make(map[string]Runnable)
@@ -58,7 +58,7 @@ func (e *Server) Add(r ...Runnable) {
 	}
 }
 
-// Start start runnable
+// Start 启动 runnable
 func (e *Server) Start(ctx context.Context) (err error) {
 	e.mutex.Lock()
 	defer e.mutex.Unlock()
@@ -119,6 +119,7 @@ func (e *Server) engageStopProcedure(stopComplete <-chan struct{}) error {
 	}
 	defer e.shutdownCancel()
 	close(e.internalProceduresStop)
+	e.internalCancel()
 
 	go func() {
 		for {
@@ -132,26 +133,26 @@ func (e *Server) engageStopProcedure(stopComplete <-chan struct{}) error {
 			}
 		}
 	}()
-	if e.opts.gracefulShutdownTimeout == 0 {
-		return nil
-	}
-	//e.mutex.Lock()
-	//defer e.mutex.Unlock()
+
 	return e.waitForRunnableToEnd()
 }
 
 func (e *Server) waitForRunnableToEnd() error {
-	defer e.internalCancel()
-	//go func() {
-	//	e.waitForRunnable.Wait()
-	//	e.shutdownCancel()
-	//}()
-	<-e.shutdownCtx.Done()
-	if err := e.shutdownCtx.Err(); err != nil && err != context.Canceled {
-		return fmt.Errorf(
-			"failed waiting for all runnables to end within grace period of %s: %w",
-			e.opts.gracefulShutdownTimeout, err)
+	if e.opts.gracefulShutdownTimeout == 0 {
+		go func() {
+			e.waitForRunnable.Wait()
+			e.shutdownCancel()
+		}()
 	}
+	select {
+	case <-e.shutdownCtx.Done():
+		if err := e.shutdownCtx.Err(); err != nil && err != context.Canceled && err != context.DeadlineExceeded {
+			return fmt.Errorf(
+				"failed waiting for all runnables to end within grace period of %s: %w",
+				e.opts.gracefulShutdownTimeout, err)
+		}
+	}
+
 	return nil
 }
 
