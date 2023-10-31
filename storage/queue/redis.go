@@ -1,7 +1,7 @@
 package queue
 
 import (
-	"github.com/go-redis/redis/v8"
+	"github.com/redis/go-redis/v9"
 	"github.com/robinjoseph08/redisqueue/v2"
 
 	"github.com/cpyun/cpyun-admin-core/storage"
