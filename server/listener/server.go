@@ -82,8 +82,8 @@ func (e *Server) Start(ctx context.Context) (err error) {
 	go func() {
 		select {
 		case <-ctx.Done():
-			if err = e.Shutdown(ctx); err != nil {
-				log.Errorf("%S Server shutdown error: %s", e.name, err.Error())
+			if err = e.Shutdown(ctx); err != nil && err != context.Canceled {
+				log.Errorf("%s server shutdown error: %s", e.name, err.Error())
 			}
 		}
 	}()
