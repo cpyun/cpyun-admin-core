@@ -104,6 +104,6 @@ func WithSource(s ...source.Source) SetOptionFuc {
 
 func WithCallback(fs ...func()) SetOptionFuc {
 	return func(o *setOptions) {
-		o.callbacks = fs
+		o.callbacks = append(o.callbacks, fs...)
 	}
 }
