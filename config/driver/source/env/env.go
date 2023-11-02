@@ -28,7 +28,7 @@ func (e *env) Read() (*source.ChangeSet, error) {
 }
 
 func (e *env) Watch() (source.Watcher, error) {
-	return nil, nil
+	return nil, source.ErrWatcherStopped
 }
 
 func (e *env) String() string {

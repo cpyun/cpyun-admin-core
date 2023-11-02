@@ -1,9 +1,18 @@
 package driver
 
-import "github.com/cpyun/cpyun-admin-core/config/driver/source"
+import (
+	"errors"
+	"github.com/cpyun/cpyun-admin-core/config/driver/loader"
+	"github.com/cpyun/cpyun-admin-core/config/driver/reader"
+	"sync"
+	"time"
+)
 
 type config struct {
-	opts Options
+	values reader.Values
+	snap   *loader.Snapshot
+	rwMux  sync.RWMutex
+	opts   Options
 }
 
 func newConfig(opts ...Option) (Config, error) {
@@ -32,15 +41,16 @@ func (c *config) Init(opts ...Option) error {
 	}
 
 	// 解析数据
-	val, err := c.opts.Reader.Values(&source.ChangeSet{})
+	c.snap, err = c.opts.Loader.Snapshot()
+
+	c.values, err = c.opts.Reader.Values(c.snap.ChangeSet)
 	if err != nil {
 		return err
 	}
 
 	// 绑定实体
 	if c.opts.Entity != nil {
-		_ = val.Scan(c.opts.Entity)
-		//WithBind(c.opts.Entity)
+		_ = c.Scan(c.opts.Entity)
 	}
 
 	return nil
@@ -51,11 +61,54 @@ func (c *config) Options() Options {
 	return c.opts
 }
 
-func (c *config) run() {
+func (c *config) Map() interface{} {
+	c.rwMux.RLock()
+	defer c.rwMux.RUnlock()
+	return c.values.Map()
+}
 
-	//if c.opts.Entity != nil {
-	//	WithBind(c.opts.Entity)
-	//	c.opts.Entity.OnChange()
-	//}
-	return
+func (c *config) Scan(v interface{}) error {
+	c.rwMux.RLock()
+	defer c.rwMux.RUnlock()
+	return c.values.Scan(v)
+}
+
+func (c *config) watch(w loader.Watcher) error {
+	snap, _ := w.Next()
+
+	// 判断数据是否更新
+	if c.snap.Version >= snap.Version {
+		//c.rwMux.Unlock()
+		return errors.New("no data updated")
+	}
+
+	c.rwMux.Lock()
+	c.snap = snap
+	// set values
+	c.values, _ = c.opts.Reader.Values(c.snap.ChangeSet)
+	if c.opts.Entity != nil {
+		_ = c.values.Scan(c.opts.Entity)
+		c.opts.Entity.OnChange()
+	}
+
+	c.rwMux.Unlock()
+	return nil
+
+}
+
+func (c *config) run() {
+	for {
+		// 获取观察者
+		w, err := c.opts.Loader.Watch()
+		if err != nil {
+			time.Sleep(3 * time.Second)
+			continue
+		}
+
+		//
+		if err = c.watch(w); err != nil {
+			time.Sleep(time.Second)
+			continue
+		}
+	}
 }

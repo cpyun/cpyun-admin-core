@@ -1,6 +1,11 @@
 package source
 
-import "time"
+import "errors"
+
+var (
+	// ErrWatcherStopped is returned when source watcher has been stopped
+	ErrWatcherStopped = errors.New("watcher stopped")
+)
 
 type Source interface {
 	Read() (*ChangeSet, error)
@@ -8,15 +13,8 @@ type Source interface {
 	String() string
 }
 
-// ChangeSet represents a set of changes from a source
-type ChangeSet struct {
-	Data      []byte
-	Checksum  string
-	Format    string
-	Source    string
-	Timestamp time.Time
-}
-
 // Watcher watches a source for changes
 type Watcher interface {
+	Next() (*ChangeSet, error)
+	Stop() error
 }

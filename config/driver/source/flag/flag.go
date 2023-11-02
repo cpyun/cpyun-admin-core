@@ -22,7 +22,7 @@ func (f *flag) Read() (*source.ChangeSet, error) {
 }
 
 func (f *flag) Watch() (source.Watcher, error) {
-	return nil, nil
+	return nil, source.ErrWatcherStopped
 }
 
 func (f *flag) String() string {

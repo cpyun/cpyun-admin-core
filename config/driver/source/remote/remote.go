@@ -22,7 +22,8 @@ func (r *remote) Read() (*source.ChangeSet, error) {
 }
 
 func (r *remote) Watch() (source.Watcher, error) {
-	return nil, nil
+	// not supported
+	return nil, source.ErrWatcherStopped
 }
 
 func (r *remote) String() string {

@@ -4,6 +4,8 @@ import (
 	"errors"
 	"github.com/cpyun/cpyun-admin-core/config/driver/source"
 	"github.com/spf13/viper"
+	"path/filepath"
+	"time"
 )
 
 type file struct {
@@ -19,11 +21,23 @@ func (f *file) Read() (*source.ChangeSet, error) {
 		return nil, err
 	}
 
-	return nil, nil
+	cs := &source.ChangeSet{
+		Format:    filepath.Ext(f.path),
+		Source:    f.String(),
+		Timestamp: time.Now(),
+		Data:      []byte("viper"),
+	}
+	cs.Checksum = cs.Sum()
+
+	return cs, nil
 }
 
 func (f *file) Watch() (source.Watcher, error) {
-	return nil, nil
+	return newWatcher(f)
+}
+
+func (f *file) Write(_ *source.ChangeSet) error {
+	return nil
 }
 
 func (f *file) String() string {
