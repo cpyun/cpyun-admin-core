@@ -3,7 +3,9 @@ package driver
 import (
 	"context"
 	"github.com/cpyun/cpyun-admin-core/config/driver/loader"
+	loaderViper "github.com/cpyun/cpyun-admin-core/config/driver/loader/viper"
 	"github.com/cpyun/cpyun-admin-core/config/driver/reader"
+	readerViper "github.com/cpyun/cpyun-admin-core/config/driver/reader/viper"
 	"github.com/cpyun/cpyun-admin-core/config/driver/source"
 )
 
@@ -29,8 +31,8 @@ type Options struct {
 
 func setDefaultOptions() Options {
 	return Options{
-		Loader: loader.NewLoaderViper(),
-		Reader: reader.NewReaderViper(),
+		Loader: loaderViper.NewLoaderViper(),
+		Reader: readerViper.NewReaderViper(),
 	}
 }
 

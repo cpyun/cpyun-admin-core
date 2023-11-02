@@ -1,5 +1,7 @@
 package config
 
+import "log"
+
 type Config struct {
 	Application *Application          `mapstructure:"application" json:"application" yaml:"application"`
 	Database    *Database             `json:"database" yaml:"database"`
@@ -18,7 +20,8 @@ type Config struct {
 }
 
 func (c *Config) OnChange() {
-
+	//c.init()
+	log.Println("config change and reload")
 }
 
 //多db改造

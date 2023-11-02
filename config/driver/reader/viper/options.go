@@ -1,4 +1,4 @@
-package reader
+package viper
 
 type Options struct {
 }
