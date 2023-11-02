@@ -24,7 +24,7 @@ func Setup() {
 
 // 创建连接
 func openDatabase(host string, c *config.Database) {
-	log.Infof("Database at [%s] => %s", host, pkg.Green(c.Source))
+	log.Debugf("Database at [%s] => %s", host, pkg.Green(c.Source))
 
 	registers := make([]toolsDB.ResolverConfigure, len(c.Registers))
 	for i := range c.Registers {
