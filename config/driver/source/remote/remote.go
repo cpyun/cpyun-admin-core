@@ -3,6 +3,7 @@ package remote
 import (
 	"github.com/cpyun/cpyun-admin-core/config/driver/source"
 	"github.com/spf13/viper"
+	"time"
 )
 
 type remote struct {
@@ -18,7 +19,16 @@ func (r *remote) Read() (*source.ChangeSet, error) {
 	}
 
 	err = viper.ReadRemoteConfig()
-	return nil, err
+
+	cs := &source.ChangeSet{
+		Format:    "json",
+		Source:    r.String(),
+		Timestamp: time.Now(),
+		Data:      []byte("viper"),
+	}
+	cs.Checksum = cs.Sum()
+
+	return cs, err
 }
 
 func (r *remote) Watch() (source.Watcher, error) {
