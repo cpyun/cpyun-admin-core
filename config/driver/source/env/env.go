@@ -4,6 +4,7 @@ import (
 	"github.com/cpyun/cpyun-admin-core/config/driver/source"
 	"github.com/spf13/viper"
 	"strings"
+	"time"
 )
 
 type env struct {
@@ -24,7 +25,15 @@ func (e *env) Read() (*source.ChangeSet, error) {
 	// 自动加载环境变量
 	viper.AutomaticEnv()
 
-	return nil, nil
+	cs := &source.ChangeSet{
+		Format:    "json",
+		Source:    e.String(),
+		Timestamp: time.Now(),
+		Data:      []byte("viper"),
+	}
+	cs.Checksum = cs.Sum()
+
+	return cs, nil
 }
 
 func (e *env) Watch() (source.Watcher, error) {

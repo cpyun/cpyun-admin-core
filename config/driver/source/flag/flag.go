@@ -1,10 +1,12 @@
 package flag
 
 import (
+	"encoding/json"
 	"errors"
 	"github.com/cpyun/cpyun-admin-core/config/driver/source"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
+	"time"
 )
 
 type flag struct {
@@ -18,7 +20,22 @@ func (f *flag) Read() (*source.ChangeSet, error) {
 	}
 
 	err := viper.BindPFlags(sets)
-	return nil, err
+
+	var changes map[string]any
+	sets.VisitAll(func(flag *pflag.Flag) {
+		changes[flag.Name] = flag.Value.String()
+	})
+	b, _ := json.Marshal(changes)
+
+	cs := &source.ChangeSet{
+		Format:    "json",
+		Source:    f.String(),
+		Timestamp: time.Now(),
+		Data:      b,
+	}
+	cs.Checksum = cs.Sum()
+
+	return cs, err
 }
 
 func (f *flag) Watch() (source.Watcher, error) {
