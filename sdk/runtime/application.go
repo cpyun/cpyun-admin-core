@@ -1,6 +1,7 @@
 package runtime
 
 import (
+	"github.com/spf13/afero"
 	"net/http"
 	"sync"
 
@@ -27,7 +28,7 @@ type Application struct {
 	memoryQueue storage.AdapterQueue
 	handler     map[string][]func(r *gin.RouterGroup, hand ...*gin.HandlerFunc)
 	routers     []Router
-	fileSystem  storage.AdapterFilesystem
+	fileSystem  afero.Fs
 }
 
 type Router struct {
@@ -254,11 +255,11 @@ func (e *Application) GetMemoryQueue(prefix string) storage.AdapterQueue {
 }
 
 // SetFilesystemAdapter 文件系统
-func (e *Application) SetFilesystemAdapter(f storage.AdapterFilesystem) {
+func (e *Application) SetFilesystemAdapter(f afero.Fs) {
 	e.fileSystem = f
 }
 
-func (e *Application) GetFilesystemAdapter() storage.AdapterFilesystem {
+func (e *Application) GetFilesystemAdapter() afero.Fs {
 	//return NewFilesystem("", e.fileSystem)
 	return e.fileSystem
 }

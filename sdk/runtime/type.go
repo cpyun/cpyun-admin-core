@@ -1,6 +1,7 @@
 package runtime
 
 import (
+	"github.com/spf13/afero"
 	"net/http"
 
 	"github.com/casbin/casbin/v2"
@@ -64,6 +65,6 @@ type Runtime interface {
 	GetStreamMessage(id, stream string, value map[string]interface{}) (storage.Messager, error)
 
 	// SetFilesystemAdapter filesystem
-	SetFilesystemAdapter(storage.AdapterFilesystem)
-	GetFilesystemAdapter() storage.AdapterFilesystem
+	SetFilesystemAdapter(fs afero.Fs)
+	GetFilesystemAdapter() afero.Fs
 }
