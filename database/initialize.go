@@ -40,10 +40,10 @@ func openDatabase(host string, c *config.Database) {
 		log.Fatal("failed to connect database:" + err.Error())
 	}
 
-	sqlDB, _ := db.DB()
+	//sqlDB, _ := db.DB()
 	//defer sqlDB.Close()
-	sqlDB.SetMaxIdleConns(c.MaxIdleConns)
-	sqlDB.SetMaxOpenConns(c.MaxOpenConns)
+	//sqlDB.SetMaxIdleConns(c.MaxIdleConns)
+	//sqlDB.SetMaxOpenConns(c.MaxOpenConns)
 
 	sdk.Runtime.SetDb(host, db)
 	//sdk.Runtime.SetCasbin(host, e)
