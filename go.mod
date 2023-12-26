@@ -21,7 +21,7 @@ require (
 	github.com/minio/minio-go/v7 v7.0.34
 	github.com/mojocn/base64Captcha v1.3.5
 	github.com/nsqio/go-nsq v1.1.0
-	github.com/redis/go-redis/v9 v9.0.3
+	github.com/redis/go-redis/v9 v9.3.1
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/robinjoseph08/redisqueue/v2 v2.1.0
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
