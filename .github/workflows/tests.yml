@@ -23,9 +23,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Setup golangci-lint
-        run:  golangci/golangci-lint-action@v3
+        uses:  golangci/golangci-lint-action@v3
         with:
-          args: --version
+          args: --verbose
   test:
     needs: lint
     strategy:
