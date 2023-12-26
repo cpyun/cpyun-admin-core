@@ -36,9 +36,9 @@ require (
 	google.golang.org/protobuf v1.30.0
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
-	gorm.io/driver/mysql v1.4.1
-	gorm.io/gorm v1.24.6
-	gorm.io/plugin/dbresolver v1.3.0
+	gorm.io/driver/mysql v1.4.3
+	gorm.io/gorm v1.25.2
+	gorm.io/plugin/dbresolver v1.5.0
 )
 
 require (
