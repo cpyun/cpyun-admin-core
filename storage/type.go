@@ -1,8 +1,6 @@
 package storage
 
 import (
-	"github.com/minio/minio-go/v7"
-	"mime/multipart"
 	"time"
 
 	"github.com/bsm/redislock"
@@ -51,12 +49,4 @@ type ConsumerFunc func(Messager) error
 type AdapterLocker interface {
 	String() string
 	Lock(key string, ttl int64, options *redislock.Options) (*redislock.Lock, error)
-}
-
-// AdapterFilesystem 文件系统
-type AdapterFilesystem interface {
-	String() string
-	PutFile(rootPath string, file *multipart.FileHeader, rule string) (minio.UploadInfo, error)
-	GetObject(objectName string) *minio.Object
-	RemoveObject(file string) bool
 }
