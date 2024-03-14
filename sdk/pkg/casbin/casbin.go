@@ -12,9 +12,9 @@ import (
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 
-	"github.com/cpyun/cpyun-admin-core/config"
-	"github.com/cpyun/cpyun-admin-core/logger"
-	"github.com/cpyun/cpyun-admin-core/sdk"
+	"github.com/cpyun/gyopls-core/config"
+	"github.com/cpyun/gyopls-core/logger"
+	"github.com/cpyun/gyopls-core/sdk"
 )
 
 var (

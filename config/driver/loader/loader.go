@@ -1,6 +1,6 @@
 package loader
 
-import "github.com/cpyun/cpyun-admin-core/config/driver/source"
+import "github.com/cpyun/gyopls-core/config/driver/source"
 
 type Loader interface {
 	Load(...source.Source) error

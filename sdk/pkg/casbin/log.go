@@ -1,7 +1,7 @@
 package casbin
 
 import (
-	"github.com/cpyun/cpyun-admin-core/logger"
+	"github.com/cpyun/gyopls-core/logger"
 	"sync/atomic"
 )
 

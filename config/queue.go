@@ -1,8 +1,8 @@
 package config
 
 import (
-	"github.com/cpyun/cpyun-admin-core/storage"
-	"github.com/cpyun/cpyun-admin-core/storage/queue"
+	"github.com/cpyun/gyopls-core/storage"
+	"github.com/cpyun/gyopls-core/storage/queue"
 	"github.com/robinjoseph08/redisqueue/v2"
 )
 

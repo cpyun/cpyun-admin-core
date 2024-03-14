@@ -5,9 +5,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/cpyun/cpyun-admin-core/logger"
-	"github.com/cpyun/cpyun-admin-core/sdk"
-	"github.com/cpyun/cpyun-admin-core/sdk/pkg"
+	"github.com/cpyun/gyopls-core/logger"
+	"github.com/cpyun/gyopls-core/sdk"
+	"github.com/cpyun/gyopls-core/sdk/pkg"
 )
 
 type loggerKey struct{}

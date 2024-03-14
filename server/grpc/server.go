@@ -14,7 +14,7 @@ import (
 	"net"
 	"sync"
 
-	log "github.com/cpyun/cpyun-admin-core/logger"
+	log "github.com/cpyun/gyopls-core/logger"
 	middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 	"google.golang.org/grpc"
@@ -105,9 +105,15 @@ func (e *Server) Start(ctx context.Context) error {
 			log.Errorf("gRPC Server start error: %s", err.Error())
 		}
 	}()
+
+	go func() {
+		if err = e.Shutdown(ctx); err != nil {
+			log.Errorf("gRPC Server shutdown error: %s", err.Error())
+		}
+	}()
+
 	e.started = true
-	<-ctx.Done()
-	return e.Shutdown(ctx)
+	return nil
 }
 
 func (e *Server) Attempt() bool {

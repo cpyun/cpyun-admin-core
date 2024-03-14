@@ -5,7 +5,7 @@ import (
 
 	//"github.com/chanxuehong/wechat/oauth2"
 
-	"github.com/cpyun/cpyun-admin-core/storage"
+	"github.com/cpyun/gyopls-core/storage"
 )
 
 const (

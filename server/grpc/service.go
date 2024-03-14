@@ -12,9 +12,9 @@ import (
 	"fmt"
 	"time"
 
-	log "github.com/cpyun/cpyun-admin-core/logger"
-	"github.com/cpyun/cpyun-admin-core/server/grpc/interceptors/logging"
-	reqtags "github.com/cpyun/cpyun-admin-core/server/grpc/interceptors/request_tag"
+	log "github.com/cpyun/gyopls-core/logger"
+	"github.com/cpyun/gyopls-core/server/grpc/interceptors/logging"
+	reqtags "github.com/cpyun/gyopls-core/server/grpc/interceptors/request_tag"
 	middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	opentracing "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 	"google.golang.org/grpc"

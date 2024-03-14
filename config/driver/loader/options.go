@@ -2,8 +2,8 @@ package loader
 
 import (
 	"context"
-	"github.com/cpyun/cpyun-admin-core/config/driver/reader"
-	"github.com/cpyun/cpyun-admin-core/config/driver/source"
+	"github.com/cpyun/gyopls-core/config/driver/reader"
+	"github.com/cpyun/gyopls-core/config/driver/source"
 )
 
 type Options struct {

@@ -2,7 +2,7 @@ package service
 
 import (
 	"fmt"
-	"github.com/cpyun/cpyun-admin-core/logger"
+	"github.com/cpyun/gyopls-core/logger"
 	"gorm.io/gorm"
 )
 

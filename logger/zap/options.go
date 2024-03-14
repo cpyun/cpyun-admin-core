@@ -6,7 +6,7 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
-	"github.com/cpyun/cpyun-admin-core/logger"
+	"github.com/cpyun/gyopls-core/logger"
 )
 
 type Options struct {

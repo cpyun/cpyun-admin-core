@@ -1,9 +1,9 @@
 package config
 
 import (
-	"github.com/cpyun/cpyun-admin-core/sdk"
-	"github.com/cpyun/cpyun-admin-core/storage"
-	"github.com/cpyun/cpyun-admin-core/storage/cache"
+	"github.com/cpyun/gyopls-core/sdk"
+	"github.com/cpyun/gyopls-core/storage"
+	"github.com/cpyun/gyopls-core/storage/cache"
 )
 
 type Cache struct {

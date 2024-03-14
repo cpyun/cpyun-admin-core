@@ -6,16 +6,17 @@ import (
 )
 
 type Email struct {
-	client *gomail.Dialer
-	opts   options
+	client  *gomail.Dialer
+	opts    options
+	started bool
 }
 
-func NewEmail(client *gomail.Dialer, opts ...Option) *Email {
+func NewEmail(client *gomail.Dialer, opts ...OptionFunc) *Email {
 	e := &Email{
 		client: client,
 		opts:   setDefaultOptions(),
 	}
-	opts = append(opts, WithFrom(client.Username))
+	e.opts.from = client.Username
 
 	e.applyOptions(opts...)
 	return e
@@ -31,17 +32,17 @@ func (e *Email) Start(ctx context.Context) error {
 
 // Attempt 是否可以使用
 func (e *Email) Attempt() bool {
-	return e.opts.started
+	return !e.opts.disable
 }
 
-func (e *Email) applyOptions(opts ...Option) {
+func (e *Email) applyOptions(opts ...OptionFunc) {
 	for _, opt := range opts {
 		opt(&e.opts)
 	}
 }
 
 func (e *Email) sendMsg(_ context.Context) error {
-	e.opts.started = true
+	e.started = true
 
 	return e.client.DialAndSend(e.opts.msg)
 }

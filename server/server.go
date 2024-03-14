@@ -13,7 +13,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/cpyun/cpyun-admin-core/logger"
+	"github.com/cpyun/gyopls-core/logger"
 )
 
 type Server struct {

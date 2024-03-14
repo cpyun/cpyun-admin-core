@@ -5,106 +5,102 @@ import (
 	"io"
 )
 
-type Option func(*options)
+type OptionFunc func(*options)
 
 type options struct {
-	started bool
+	disable bool
 	from    string
-	to      string
-	cc      string
-	bcc     string
+	to      []string
+	cc      []string
+	bcc     []string
+	subject string
 	msg     *gomail.Message
 }
 
 func setDefaultOptions() options {
 	return options{
-		started: false,
+		disable: false,
 		msg:     gomail.NewMessage(),
 	}
 }
 
-func WithStarted(started bool) Option {
+func WithDisable(disable bool) OptionFunc {
 	return func(o *options) {
-		o.started = started
+		o.disable = disable
 	}
 }
 
-func WithFrom(from string) Option {
+func WithFrom(from string) OptionFunc {
 	return func(o *options) {
 		o.msg.SetHeader("From", from)
 		o.from = from
 	}
 }
 
-func WithTo(to ...string) Option {
+func WithTo(to ...string) OptionFunc {
 	return func(o *options) {
 		o.msg.SetHeader("To", to...)
+		o.to = append(o.to, to...)
 	}
 }
 
-func WithCc(cc ...string) Option {
+func WithCc(cc ...string) OptionFunc {
 	return func(o *options) {
 		o.msg.SetHeader("Cc", cc...)
+		o.cc = append(o.cc, cc...)
 	}
 }
 
-func WithBcc(bcc ...string) Option {
+func WithBcc(bcc ...string) OptionFunc {
 	return func(o *options) {
 		o.msg.SetHeader("Bcc", bcc...)
+		o.bcc = append(o.bcc, bcc...)
 	}
 }
 
-func WithSubject() Option {
+func WithSubject(s string) OptionFunc {
 	return func(o *options) {
-		o.msg.SetHeader("Subject", "test")
+		o.msg.SetHeader("Subject", s)
+		o.subject = s
 	}
 }
 
 // WithBody contentType, body string
-// func WithBody(contentType, body string) Option
+// func WithBody(contentType, body string) OptionFunc
 //
-func WithBody(contentType, body string) Option {
+func WithBody(contentType, body string) OptionFunc {
 	return func(o *options) {
 		o.msg.SetBody(contentType, body)
 	}
 }
 
 // WithAttr 本地附件
-func WithAttr(filename string) Option {
+func WithAttr(filename string, src ...io.Reader) OptionFunc {
 	return func(o *options) {
-		o.msg.Attach(filename)
-	}
-}
-
-func WithAttrWriter(filename string, src io.Reader) Option {
-	return func(o *options) {
-		o.msg.Attach(filename,
-			gomail.SetCopyFunc(func(w io.Writer) error {
-				_, err := io.Copy(w, src)
+		var settings []gomail.FileSetting
+		for i := 0; i < len(src); i++ {
+			settings = append(settings, gomail.SetCopyFunc(func(w io.Writer) error {
+				_, err := io.Copy(w, src[i])
 				return err
 			}))
+		}
+
+		o.msg.Attach(filename, settings...)
 	}
 }
 
-// WithEmbed 本地图片
-func WithEmbed(filename string) Option {
+// WithEmbed 图片
+// 	eg: WithEmbed("./1.jpg") 本地图片
+func WithEmbed(filename string, src ...io.Reader) OptionFunc {
 	return func(o *options) {
-		o.msg.Attach(filename)
-	}
-}
-
-func WithEmbedWriter(filename string, src io.Reader) Option {
-	return func(o *options) {
-		o.msg.Embed(filename,
-			gomail.SetCopyFunc(func(w io.Writer) error {
-				_, err := io.Copy(w, src)
+		var settings []gomail.FileSetting
+		for i := 0; i < len(src); i++ {
+			settings = append(settings, gomail.SetCopyFunc(func(w io.Writer) error {
+				_, err := io.Copy(w, src[i])
 				return err
 			}))
-	}
-}
+		}
 
-func WithMsg(msg *gomail.Message) Option {
-	return func(o *options) {
-		o.msg = msg
+		o.msg.Embed(filename, settings...)
 	}
 }

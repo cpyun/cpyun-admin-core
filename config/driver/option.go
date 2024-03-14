@@ -2,11 +2,11 @@ package driver
 
 import (
 	"context"
-	"github.com/cpyun/cpyun-admin-core/config/driver/loader"
-	loaderViper "github.com/cpyun/cpyun-admin-core/config/driver/loader/viper"
-	"github.com/cpyun/cpyun-admin-core/config/driver/reader"
-	readerViper "github.com/cpyun/cpyun-admin-core/config/driver/reader/viper"
-	"github.com/cpyun/cpyun-admin-core/config/driver/source"
+	"github.com/cpyun/gyopls-core/config/driver/loader"
+	loaderViper "github.com/cpyun/gyopls-core/config/driver/loader/viper"
+	"github.com/cpyun/gyopls-core/config/driver/reader"
+	readerViper "github.com/cpyun/gyopls-core/config/driver/reader/viper"
+	"github.com/cpyun/gyopls-core/config/driver/source"
 )
 
 type Option interface {

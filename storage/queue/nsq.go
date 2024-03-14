@@ -8,7 +8,7 @@
 package queue
 
 import (
-	"github.com/cpyun/cpyun-admin-core/storage"
+	"github.com/cpyun/gyopls-core/storage"
 	json "github.com/json-iterator/go"
 	"github.com/nsqio/go-nsq"
 )

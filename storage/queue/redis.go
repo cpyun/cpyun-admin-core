@@ -4,7 +4,7 @@ import (
 	"github.com/redis/go-redis/v9"
 	"github.com/robinjoseph08/redisqueue/v2"
 
-	"github.com/cpyun/cpyun-admin-core/storage"
+	"github.com/cpyun/gyopls-core/storage"
 )
 
 // NewRedis redis模式

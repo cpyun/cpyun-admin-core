@@ -1,7 +1,7 @@
 package queue
 
 import (
-	"github.com/cpyun/cpyun-admin-core/storage"
+	"github.com/cpyun/gyopls-core/storage"
 	"github.com/google/uuid"
 	"sync"
 )

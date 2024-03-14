@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	logCore "github.com/cpyun/cpyun-admin-core/logger"
+	logCore "github.com/cpyun/gyopls-core/logger"
 	"gorm.io/gorm/logger"
 )
 

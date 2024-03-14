@@ -3,7 +3,7 @@ package queue
 import (
 	"sync"
 
-	"github.com/cpyun/cpyun-admin-core/storage"
+	"github.com/cpyun/gyopls-core/storage"
 	"github.com/robinjoseph08/redisqueue/v2"
 )
 
