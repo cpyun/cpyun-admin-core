@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/utils"
 
-	loggerCore "github.com/cpyun/cpyun-admin-core/logger"
+	loggerCore "github.com/cpyun/gyopls-core/logger"
 )
 
 // Colors

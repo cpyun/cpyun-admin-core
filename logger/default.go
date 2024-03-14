@@ -11,7 +11,7 @@ import (
 	"sync"
 	"time"
 
-	dlog "github.com/cpyun/cpyun-admin-core/debug/log"
+	dlog "github.com/cpyun/gyopls-core/debug/log"
 )
 
 type defaultLogger struct {

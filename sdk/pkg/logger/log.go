@@ -4,8 +4,8 @@ import (
 	"io"
 	"os"
 
-	log "github.com/cpyun/cpyun-admin-core/logger"
-	"github.com/cpyun/cpyun-admin-core/logger/zap"
+	log "github.com/cpyun/gyopls-core/logger"
+	"github.com/cpyun/gyopls-core/logger/zap"
 
 	"gopkg.in/natefinch/lumberjack.v2"
 )

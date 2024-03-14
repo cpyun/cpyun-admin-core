@@ -10,9 +10,9 @@ import (
 	"github.com/robfig/cron/v3"
 	"gorm.io/gorm"
 
-	"github.com/cpyun/cpyun-admin-core/logger"
-	"github.com/cpyun/cpyun-admin-core/storage"
-	"github.com/cpyun/cpyun-admin-core/storage/queue"
+	"github.com/cpyun/gyopls-core/logger"
+	"github.com/cpyun/gyopls-core/storage"
+	"github.com/cpyun/gyopls-core/storage/queue"
 )
 
 type Application struct {

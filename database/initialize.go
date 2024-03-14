@@ -7,12 +7,12 @@ import (
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 
-	"github.com/cpyun/cpyun-admin-core/config"
-	log "github.com/cpyun/cpyun-admin-core/logger"
-	"github.com/cpyun/cpyun-admin-core/sdk"
-	"github.com/cpyun/cpyun-admin-core/sdk/pkg"
-	toolsDB "github.com/cpyun/cpyun-admin-core/tools/database"
-	toolLogger "github.com/cpyun/cpyun-admin-core/tools/gorm/logger"
+	"github.com/cpyun/gyopls-core/config"
+	log "github.com/cpyun/gyopls-core/logger"
+	"github.com/cpyun/gyopls-core/sdk"
+	"github.com/cpyun/gyopls-core/sdk/pkg"
+	toolsDB "github.com/cpyun/gyopls-core/tools/database"
+	toolLogger "github.com/cpyun/gyopls-core/tools/gorm/logger"
 )
 
 // Setup 配置数据库

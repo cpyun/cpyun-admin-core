@@ -2,7 +2,7 @@ package ctxlog
 
 import (
 	"context"
-	"github.com/cpyun/cpyun-admin-core/logger"
+	"github.com/cpyun/gyopls-core/logger"
 
 	"github.com/grpc-ecosystem/go-grpc-middleware/tags"
 )

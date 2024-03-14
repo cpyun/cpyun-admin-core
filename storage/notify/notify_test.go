@@ -1,7 +1,7 @@
 package notify
 
 import (
-	"github.com/cpyun/cpyun-admin-core/storage/notify/email"
+	"github.com/cpyun/gyopls-core/storage/notify/email"
 	"gopkg.in/gomail.v2"
 	"testing"
 )

@@ -1,0 +1,84 @@
+# Global configuration
+
+application:
+  # dev开发环境 test测试环境 prod线上环境
+  mode: "prod"
+  # 服务器ip，默认使用 0.0.0.0
+  host: 0.0.0.0
+  # 端口号
+  port: 45681
+  # 服务名称
+  name: test
+
+logger:
+  # 日志驱动， default: 系统默认, zap: uber zap
+  type: "zap"
+  # 日志存放路径
+  path: runtime/logs/log.log
+  # 日志输出，file：文件，console：命令行，default：命令行
+  stdout: "file"
+  # 日志等级, trace, debug, info, warn, error, fatal
+  level: "warn"
+  # 日志时间格式
+  time-format: "2006/01/02 15:04:05 +0800"       # 2006-01-02T15:04:05Z08:00
+  # 日志裁切
+  cut:
+    cap: 100        # 大小，单位MB
+    max-age: 0      # 备份最大天数
+    max-backups: 0  # 备份最大数
+    compress: true  # 是否压缩.gz
+
+cache:
+  # 缓存类型 redis， memory
+  driver: redis
+  redis:
+    db: 0
+    addr: "127.0.0.1:6379"
+    password: ""
+
+databases:
+  mysql:
+    driver: mysql
+    source: root:123456@tcp(192.168.99.77:3306)/pwd_mall?charset=utf8&parseTime=True&loc=Local&timeout=1000ms
+#    register:
+#      - sources:
+#          - user:password@tcp(127.0.0.1:3306)/dbname?charset=utf8&parseTime=True&loc=Local&timeout=1000ms
+
+
+jwt:
+  # token 密钥，生产环境时及的修改
+  signing-key: "cpyun"
+  # token 过期时间 单位：秒
+  expires-time: 604800
+  buffer-time: 96400
+  issuer: "cpyun"
+
+redis:
+  db: 0
+  addr: "127.0.0.1:6379"
+  password: ""
+
+locker:
+  driver: "redis"
+
+casbin:
+  model-path: "./config/rbac_model.conf"
+  redis:
+    network: "tcp"
+    addr: "127.0.0.1:6379"
+    password: ""
+
+filesystem:
+  driver: minio
+  minio:
+    endpoint: "127.0.0.1:9000"
+    access-key-id: "accessKey"
+    secret-access-key: "secretKey"
+    region: "cn-north-1"
+    secure: false
+    bucket: "bucketName"
+
+# 扩展项使用说明
+extend:
+  demo:
+    name: test

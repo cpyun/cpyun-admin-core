@@ -3,7 +3,7 @@ package runtime
 import (
 	"github.com/bsm/redislock"
 
-	"github.com/cpyun/cpyun-admin-core/storage"
+	"github.com/cpyun/gyopls-core/storage"
 )
 
 // NewLocker 创建对应上下文分布式锁

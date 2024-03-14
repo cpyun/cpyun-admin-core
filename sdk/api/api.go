@@ -2,10 +2,10 @@ package api
 
 import (
 	"fmt"
-	"github.com/cpyun/cpyun-admin-core/logger"
-	"github.com/cpyun/cpyun-admin-core/sdk/pkg"
-	"github.com/cpyun/cpyun-admin-core/sdk/pkg/response"
-	"github.com/cpyun/cpyun-admin-core/sdk/service"
+	"github.com/cpyun/gyopls-core/logger"
+	"github.com/cpyun/gyopls-core/sdk/pkg"
+	"github.com/cpyun/gyopls-core/sdk/pkg/response"
+	"github.com/cpyun/gyopls-core/sdk/service"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"net/http"

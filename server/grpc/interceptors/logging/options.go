@@ -11,8 +11,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/cpyun/cpyun-admin-core/logger"
-	"github.com/cpyun/cpyun-admin-core/server/grpc/interceptors/logging/ctxlog"
+	"github.com/cpyun/gyopls-core/logger"
+	"github.com/cpyun/gyopls-core/server/grpc/interceptors/logging/ctxlog"
 	grpc_logging "github.com/grpc-ecosystem/go-grpc-middleware/logging"
 	"google.golang.org/grpc/codes"
 )

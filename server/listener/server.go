@@ -14,8 +14,8 @@ import (
 	"net/http"
 	"sync"
 
-	log "github.com/cpyun/cpyun-admin-core/logger"
-	"github.com/cpyun/cpyun-admin-core/server"
+	log "github.com/cpyun/gyopls-core/logger"
+	"github.com/cpyun/gyopls-core/server"
 )
 
 type Server struct {

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 
-	"github.com/cpyun/cpyun-admin-core/sdk/pkg"
-	jwt "github.com/cpyun/cpyun-admin-core/sdk/pkg/auth"
+	"github.com/cpyun/gyopls-core/sdk/pkg"
+	jwt "github.com/cpyun/gyopls-core/sdk/pkg/auth"
 )
 
 func ExtractClaims(c *gin.Context) jwt.MapClaims {

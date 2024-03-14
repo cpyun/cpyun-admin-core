@@ -1,6 +1,6 @@
 package config
 
-import "github.com/cpyun/cpyun-admin-core/sdk/pkg/logger"
+import "github.com/cpyun/gyopls-core/sdk/pkg/logger"
 
 var LoggerConfig = new(Logger)
 

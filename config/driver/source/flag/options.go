@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/spf13/pflag"
 
-	"github.com/cpyun/cpyun-admin-core/config/driver/source"
+	"github.com/cpyun/gyopls-core/config/driver/source"
 )
 
 type flagSets struct{}

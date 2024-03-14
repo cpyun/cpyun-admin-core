@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/cpyun/cpyun-admin-core/tools/search"
+	"github.com/cpyun/gyopls-core/tools/search"
 	"gorm.io/gorm"
 )
 
